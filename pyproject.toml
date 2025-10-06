@@ -1,0 +1,22 @@
+[project]
+name = "proyecto-entrega-1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "black>=25.9.0",
+    "flake8>=7.3.0",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
+    "pytorch-lightning>=2.5.5",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "torch>=2.8.0",
+    "torchvision>=0.23.0",
+]
+
+[dependency-groups]
+dev = [
+    "pdoc>=15.0.4",
+]
