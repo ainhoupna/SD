@@ -456,3 +456,61 @@ def plot_curves_from_csvlogger(
             break
 
     return saved
+
+
+def plot_class_distribution(
+    df: pd.DataFrame, class_names: List[str], out_path: Optional[str] = None
+) -> plt.Figure:
+    """
+    Plots the distribution of classes in a dataset.
+
+    Args:
+        df (pd.DataFrame): DataFrame with a 'label' column.
+        class_names (List[str]): List of class names.
+        out_path (Optional[str], optional): If provided, saves the plot. Defaults to None.
+
+    Returns:
+        plt.Figure: The matplotlib figure object.
+    """
+    class_counts = df["label"].value_counts().sort_index()
+    fig = plt.figure(figsize=(9, 4))
+    plt.bar(class_counts.index, class_counts.values)
+    plt.xticks(np.arange(len(class_names)), class_names, rotation=45, ha="right")
+    plt.ylabel("Number of Samples")
+    plt.title("Class Distribution")
+    plt.tight_layout()
+
+    if out_path:
+        _ensure_dir(os.path.dirname(out_path))
+        plt.savefig(out_path, dpi=160)
+        plt.close()
+
+    return fig
+
+
+def get_sample_images_for_gallery(
+    df: pd.DataFrame, class_names: List[str], n_samples: int = 20
+) -> List[Tuple[np.ndarray, str]]:
+    """
+    Gets a list of random sample images and their labels for a Gradio Gallery.
+
+    Args:
+        df (pd.DataFrame): DataFrame with image data.
+        class_names (List[str]): List of class names.
+        n_samples (int, optional): Number of samples to retrieve. Defaults to 20.
+
+    Returns:
+        List[Tuple[np.ndarray, str]]: A list of tuples, each containing an image and its label.
+    """
+    samples = []
+    if len(df) > n_samples:
+        df_sample = df.sample(n=n_samples)
+    else:
+        df_sample = df
+
+    for _, row in df_sample.iterrows():
+        label = class_names[int(row["label"])]
+        image_data = row.iloc[1:].values.astype(np.uint8)
+        image = image_data.reshape(28, 28)
+        samples.append((image, label))
+    return samples

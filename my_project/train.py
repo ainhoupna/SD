@@ -1,13 +1,15 @@
 from my_project.config import TRAIN_CSV_PATH, TEST_CSV_PATH
 from my_project.dataset import FashionMNISTCSVDataModule
 from my_project.model import Net
-from my_project.plots import evaluate_and_plot
+from my_project.plots import evaluate_and_plot, plot_curves_from_csvlogger
 import pytorch_lightning as pl
+from pytorch_lightning.loggers import CSVLogger
 
 # Experimental params
 BATCH_SIZE = 128
 NUM_WORKERS = 4
 MAX_EPOCHS = 5
+LEARNING_RATE = 1e-3
 
 
 def main():
@@ -38,19 +40,23 @@ def main():
         num_workers=NUM_WORKERS,
     )
 
-    net = Net(num_filters=32, hidden_size=64)
+    net = Net(num_filters=32, hidden_size=64, lr=LEARNING_RATE)
+
+    logger = CSVLogger("lightning_logs", name="fashion_model")
 
     trainer = pl.Trainer(
         max_epochs=MAX_EPOCHS,
         accelerator="auto",
         devices="auto",
-        default_root_dir="models/lightning_logs",
+        logger=logger,
     )
 
     trainer.fit(net, datamodule=data_module)
     trainer.test(net, datamodule=data_module)
 
     artifacts = evaluate_and_plot(net, data_module, out_dir="reports/figures")
+    plot_curves_from_csvlogger(logger.log_dir)
+
     print(f"Test accuracy: {artifacts['test_accuracy']:.4f}")
     print("Saved figures:")
     for k, v in artifacts.items():
