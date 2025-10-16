@@ -24,6 +24,8 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.calibration import calibration_curve
+from scipy.cluster import hierarchy as sch
+from scipy.spatial.distance import pdist
 
 
 # Fashion-MNIST class names (0..9)
@@ -334,7 +336,7 @@ def evaluate_and_plot(
     # 4) Misclassified samples grid
     mis_path = os.path.join(out_dir, "misclassified_grid.png")
     plot_misclassified_grid(
-        model, test_loader, FASHION_CLASSES, mis_path, max_examples=16
+        model, test_loader, FASHION_CLASSES, mis_path, max_examples=9
     )
 
     # 5) Calibration (reliability) curve
@@ -458,6 +460,70 @@ def plot_curves_from_csvlogger(
     return saved
 
 
+def plot_learning_curves_from_df(
+    df: pd.DataFrame,
+) -> Tuple[Optional[plt.Figure], Optional[plt.Figure]]:
+    """
+    Parses a metrics DataFrame and produces line plots for train loss and val accuracy.
+
+    Args:
+        df (pd.DataFrame): DataFrame with metrics (e.g., from CSVLogger).
+
+    Returns:
+        A tuple of (train_loss_figure, val_acc_figure). Figures can be None.
+    """
+    train_loss_fig, val_acc_fig = None, None
+
+    # Train loss vs step/epoch
+    train_loss_keys = ["train_loss_step", "train_loss_epoch", "loss", "train_loss"]
+    val_acc_keys = ["val_acc", "val_acc_epoch"]
+
+    for key in train_loss_keys:
+        if key in df.columns and not df[key].isna().all():
+            series = df[key].dropna()
+            # Prefer 'step' index if present, else 'epoch'
+            if "step" in df.columns and not df["step"].isna().all():
+                x = df.loc[series.index, "step"]
+                x_label = "Step"
+            else:
+                x = df.loc[series.index, "epoch"]
+                x_label = "Epoch"
+
+            train_loss_fig = plt.figure(figsize=(6, 4))
+            plt.plot(x, series)
+            plt.xlabel(x_label)
+            plt.ylabel("Train Loss")
+            plt.title(f"Training Loss vs. {x_label}")
+            plt.tight_layout()
+            # Only plot first that exists
+            break
+
+    # Validation accuracy vs epoch
+    for key in val_acc_keys:
+        if key in df.columns and not df[key].isna().all():
+            series = df[key].dropna()
+            if "epoch" in df.columns:
+                x = df.loc[series.index, "epoch"]
+            else:
+                x = series.index
+
+            val_acc_fig = plt.figure(figsize=(6, 4))
+            plt.plot(x, series)
+            plt.xlabel("Epoch")
+            plt.ylabel("Validation Accuracy")
+            plt.title("Validation Accuracy vs. Epoch")
+            plt.ylim(0, 1)
+            plt.tight_layout()
+            # Only plot first that exists
+            break
+
+    # Close figures if they were not created to avoid empty plots
+    if train_loss_fig is None: plt.close()
+    if val_acc_fig is None: plt.close()
+
+    return train_loss_fig, val_acc_fig
+
+
 def plot_class_distribution(
     df: pd.DataFrame, class_names: List[str], out_path: Optional[str] = None
 ) -> plt.Figure:
@@ -473,11 +539,19 @@ def plot_class_distribution(
         plt.Figure: The matplotlib figure object.
     """
     class_counts = df["label"].value_counts().sort_index()
+    total_samples = class_counts.sum()
+
     fig = plt.figure(figsize=(9, 4))
-    plt.bar(class_counts.index, class_counts.values)
+    bars = plt.bar(class_counts.index, class_counts.values)
     plt.xticks(np.arange(len(class_names)), class_names, rotation=45, ha="right")
     plt.ylabel("Number of Samples")
     plt.title("Class Distribution")
+
+    # Add count and percentage labels
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2., height, f'{height}\n({height/total_samples:.1%})', ha='center', va='bottom', fontsize=8)
+
     plt.tight_layout()
 
     if out_path:
@@ -512,5 +586,47 @@ def get_sample_images_for_gallery(
         label = class_names[int(row["label"])]
         image_data = row.iloc[1:].values.astype(np.uint8)
         image = image_data.reshape(28, 28)
+        # The label is now just plain text
         samples.append((image, label))
     return samples
+
+
+def plot_class_correlation_dendrogram(
+    df: pd.DataFrame, class_names: List[str], out_path: Optional[str] = None
+) -> plt.Figure:
+    """
+    Calculates and plots a dendrogram showing the similarity between the
+    average image of each class.
+
+    Args:
+        df (pd.DataFrame): DataFrame with image data and labels.
+        class_names (List[str]): List of class names.
+        out_path (Optional[str], optional): If provided, saves the plot. Defaults to None.
+
+    Returns:
+        plt.Figure: The matplotlib figure object.
+    """
+    mean_images = []
+    for i in range(len(class_names)):
+        # Filter for the class, get pixel data, and calculate the mean image
+        mean_img = df[df["label"] == i].iloc[:, 1:].mean().values
+        mean_images.append(mean_img)
+
+    # Convert list of mean images to a matrix
+    mean_images_matrix = np.vstack(mean_images)
+
+    # Perform hierarchical clustering
+    linked = sch.linkage(mean_images_matrix, method="ward")
+
+    fig = plt.figure(figsize=(9, 4))
+    sch.dendrogram(linked, orientation="top", labels=class_names, leaf_rotation=90)
+    plt.ylabel("Euclidean Distance (between mean images)")
+    plt.title("Visual Similarity Between Classes (Dendrogram)")
+    plt.tight_layout()
+
+    if out_path:
+        _ensure_dir(os.path.dirname(out_path))
+        plt.savefig(out_path, dpi=160)
+        plt.close()
+
+    return fig
