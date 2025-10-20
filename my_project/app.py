@@ -6,8 +6,7 @@ import pandas as pd
 import tempfile
 import os
 
-from my_project.config import TEST_CSV_PATH, TRAIN_CSV_PATH
-from my_project.dataset import FashionMNISTCSVDataModule
+from my_project.dataset import FashionMNISTDataModule
 from my_project.model import Net
 from my_project.plots import (
     evaluate_and_plot,
@@ -18,9 +17,27 @@ from my_project.plots import (
     plot_class_correlation_dendrogram,
 )
 
-# --- Pre-load data for exploration to speed up the UI ---
-train_df = pd.read_csv(TRAIN_CSV_PATH)
-test_df = pd.read_csv(TEST_CSV_PATH)
+# Set matmul precision for Tensor Cores
+if torch.cuda.is_available():
+    torch.set_float32_matmul_precision('high')
+
+
+def get_df_from_dataset(dataset):
+    """Converts a torchvision dataset to a pandas DataFrame."""
+    images = dataset.data.view(len(dataset), -1).numpy()
+    labels = dataset.targets.numpy()
+    df = pd.DataFrame(images)
+    df.columns = [f"pixel{i}" for i in range(images.shape[1])]
+    df["label"] = labels
+    return df
+
+
+# --- Load data for exploration using the DataModule ---
+explore_datamodule = FashionMNISTDataModule(data_dir="data/", batch_size=128)
+explore_datamodule.prepare_data()
+explore_datamodule.setup()
+train_df = get_df_from_dataset(explore_datamodule.train_val_dataset)
+test_df = get_df_from_dataset(explore_datamodule.test_dataset)
 
 
 def update_data_exploration(dataset_choice, class_filter):
@@ -71,11 +88,8 @@ def train_and_evaluate(
     This will be connected to the Gradio interface.
     """
     progress(0, desc="Initializing DataModule...")
-    datamodule = FashionMNISTCSVDataModule(
-        train_csv=TRAIN_CSV_PATH,
-        test_csv=TEST_CSV_PATH,
-        batch_size=int(batch_size),
-    )
+    # The data will be downloaded to the 'data/' directory if not present
+    datamodule = FashionMNISTDataModule(data_dir="data/", batch_size=int(batch_size))
 
     progress(0.1, desc="Initializing Model...")
     model = Net(num_filters=int(num_filters), hidden_size=int(hidden_size), lr=lr)
@@ -111,7 +125,7 @@ def train_and_evaluate(
             train_loss_fig, val_acc_fig = plot_learning_curves_from_df(metrics_df)
 
         progress(0.9, desc="Evaluating on Test Set...")
-        # Manually call setup for the 'test' stage to ensure test_ds is initialized.
+        # Manually call setup for the 'test' stage to ensure test_dataset is initialized.
         datamodule.setup(stage="test")
 
         # The evaluate_and_plot function already returns the paths to the plots
