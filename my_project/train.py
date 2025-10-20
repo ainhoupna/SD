@@ -1,16 +1,29 @@
 from my_project.config import TRAIN_CSV_PATH, TEST_CSV_PATH
 from my_project.dataset import FashionMNISTCSVDataModule
 from my_project.model import Net
-from my_project.plots import evaluate_and_plot, plot_curves_from_csvlogger
+from my_project.plots import evaluate_and_plot
 import pytorch_lightning as pl
-from pytorch_lightning.loggers import CSVLogger
+
+"""
+Train and evaluate the Fashion-MNIST model.
+
+This script can be run from the command line to:
+1. Initialize the DataModule and model with default or specified parameters.
+2. Run the training process for a fixed number of epochs.
+3. Evaluate the trained model on the test set.
+4. Save evaluation figures (like confusion matrix) in `reports/figures/`.
+
+Examples
+--------
+Run training from the command line:
+
+>>> python -m my_project.train
+"""
 
 # Experimental params
 BATCH_SIZE = 128
 NUM_WORKERS = 4
 MAX_EPOCHS = 5
-LEARNING_RATE = 1e-3
-
 
 def main():
     """
@@ -24,13 +37,7 @@ def main():
 
     Returns
     -------
-    None
-
-    Examples
-    --------
-    Run training from the command line:
-
-    >>> python -m my_project.train
+    The main training and evaluation function.
     """
 
     data_module = FashionMNISTCSVDataModule(
@@ -40,23 +47,19 @@ def main():
         num_workers=NUM_WORKERS,
     )
 
-    net = Net(num_filters=32, hidden_size=64, lr=LEARNING_RATE)
-
-    logger = CSVLogger("lightning_logs", name="fashion_model")
+    net = Net(num_filters=32, hidden_size=64)
 
     trainer = pl.Trainer(
         max_epochs=MAX_EPOCHS,
         accelerator="auto",
         devices="auto",
-        logger=logger,
+        default_root_dir="models/lightning_logs",
     )
 
     trainer.fit(net, datamodule=data_module)
     trainer.test(net, datamodule=data_module)
 
     artifacts = evaluate_and_plot(net, data_module, out_dir="reports/figures")
-    plot_curves_from_csvlogger(logger.log_dir)
-
     print(f"Test accuracy: {artifacts['test_accuracy']:.4f}")
     print("Saved figures:")
     for k, v in artifacts.items():
