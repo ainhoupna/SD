@@ -141,34 +141,34 @@ with gr.Blocks(
     gr.Markdown("# Fashion-MNIST Interactive Demo")
 
     with gr.Tab("Data Exploration"):
-        gr.Markdown("## Exploración Interactiva del Dataset Fashion-MNIST")
+        gr.Markdown("## Interactive Exploration of the Fashion-MNIST Dataset")
         gr.Markdown(
-            "Usa los controles para cambiar entre los datos de entrenamiento (Train) y prueba (Test), o para filtrar las imágenes por clase."
+            "Use the controls to switch between the training and test datasets, or to filter images by class."
         )
 
         with gr.Row(variant="panel"):
             with gr.Column(scale=1, min_width=250):
-                gr.Markdown("### Controles")
+                gr.Markdown("### Controls")
                 dataset_selector = gr.Radio(
-                    ["Train", "Test"], value="Train", label="Seleccionar Dataset"
+                    ["Train", "Test"], value="Train", label="Select Dataset"
                 )
                 stats_md_box = gr.Markdown()
 
-                gr.Markdown("### Galería de Imágenes")
+                gr.Markdown("### Image Gallery")
                 class_selector = gr.Dropdown(
-                    ["All"] + FASHION_CLASSES, value="All", label="Filtrar por Clase"
+                    ["All"] + FASHION_CLASSES, value="All", label="Filter by Class"
                 )
-                refresh_button = gr.Button("Refrescar Imágenes")
+                refresh_button = gr.Button("Refresh Images")
 
             with gr.Column(scale=3):
                 with gr.Tabs():
-                    with gr.TabItem("Distribución de Clases"):
+                    with gr.TabItem("Class Distribution"):
                         dist_plot = gr.Plot()
-                    with gr.TabItem("Similitud entre Clases"):
+                    with gr.TabItem("Class Similarity"):
                         dendrogram_plot = gr.Plot()
-                gr.Markdown("### Muestras de Imágenes")
+                gr.Markdown("### Image Samples")
                 gallery = gr.Gallery(
-                    label="Muestras aleatorias del dataset",
+                    label="Random samples from the dataset",
                     columns=5,
                     object_fit="contain",
                     height="auto",
