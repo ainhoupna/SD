@@ -135,7 +135,7 @@ def plot_confusion_matrix(
             cm = cm.astype(np.float64) / cm.sum(axis=1, keepdims=True)
         cm = np.nan_to_num(cm)
 
-    plt.figure(figsize=(7, 6))
+    plt.figure(figsize=(6, 5))
     plt.imshow(cm, interpolation="nearest", cmap="coolwarm")
     plt.title("Confusion Matrix " if normalize else "Confusion Matrix")
     plt.colorbar()
@@ -295,7 +295,7 @@ def plot_misclassified_grid(
     cols = int(math.ceil(math.sqrt(len(images))))
     rows = int(math.ceil(len(images) / cols))
 
-    plt.figure(figsize=(cols * 2.0, rows * 2.0))
+    plt.figure(figsize=(cols * 1.5, rows * 1.5))
     for i, img in enumerate(images):
         ax = plt.subplot(rows, cols, i + 1)
         ax.imshow(_denormalize_img(img), cmap="gray")
@@ -336,7 +336,7 @@ def evaluate_and_plot(
     # 4) Misclassified samples grid
     mis_path = os.path.join(out_dir, "misclassified_grid.png")
     plot_misclassified_grid(
-        model, test_loader, FASHION_CLASSES, mis_path, max_examples=9
+        model, test_loader, FASHION_CLASSES, mis_path, max_examples=6
     )
 
     # 5) Calibration (reliability) curve
@@ -360,12 +360,12 @@ def plot_calibration_curve(y_true, y_prob, out_path, n_bins: int = 10):
         y_true, y_prob, n_bins=n_bins, strategy="uniform"
     )
 
-    plt.figure(figsize=(5, 5))
+    plt.figure(figsize=(6, 5))
     plt.plot(prob_pred, prob_true, marker="o", label="Model")
     plt.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Perfectly calibrated")
     plt.xlabel("Predicted probability")
     plt.ylabel("Observed frequency")
-    plt.title("Calibration curve")
+    plt.title("Calibration Curve")
     plt.legend()
     plt.tight_layout()
     plt.savefig(out_path, dpi=160)
@@ -501,14 +501,11 @@ def plot_learning_curves_from_df(
     # Validation accuracy vs epoch
     for key in val_acc_keys:
         if key in df.columns and not df[key].isna().all():
+            # Filter to get only the steps where validation was run
             series = df[key].dropna()
-            if "epoch" in df.columns:
-                x = df.loc[series.index, "epoch"]
-            else:
-                x = series.index
-
+            x = df.loc[series.index, "epoch"]
             val_acc_fig = plt.figure(figsize=(6, 4))
-            plt.plot(x, series)
+            plt.plot(x, series, marker='o', linestyle='-')
             plt.xlabel("Epoch")
             plt.ylabel("Validation Accuracy")
             plt.title("Validation Accuracy vs. Epoch")
@@ -545,7 +542,7 @@ def plot_class_distribution(
     bars = plt.bar(class_counts.index, class_counts.values)
     plt.xticks(np.arange(len(class_names)), class_names, rotation=45, ha="right")
     plt.ylabel("Number of Samples")
-    plt.title("Class Distribution")
+    plt.title("Dataset Class Distribution")
 
     # Add count and percentage labels
     for bar in bars:
@@ -621,7 +618,7 @@ def plot_class_correlation_dendrogram(
     fig = plt.figure(figsize=(9, 4))
     sch.dendrogram(linked, orientation="top", labels=class_names, leaf_rotation=90)
     plt.ylabel("Euclidean Distance (between mean images)")
-    plt.title("Visual Similarity Between Classes (Dendrogram)")
+    plt.title("Class Similarity Dendrogram")
     plt.tight_layout()
 
     if out_path:
