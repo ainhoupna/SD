@@ -1,12 +1,27 @@
 [project]
 name = "proyecto-entrega-1"
 version = "0.1.0"
-description = "Add your description here"
+authors = [
+  { name="Ainhoa Del Rey", email="delrey.132148@e.unavarra.es"},
+  { name="Iñigo Goikoetxea", email="goicoechea.128710@e.unavarra.es" },
+  { name="Maria Ines", email="haddad.179806@e.unavarra.es" }
+]
+
+description = "An image classification model for Fashion MNIST using PyTorch Lightning."
 readme = "README.md"
 requires-python = ">=3.12"
+license = { text = "MIT" }
+keywords = ["pytorch", "lightning", "fashion-mnist", "image-classification"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
-    "black>=25.9.0",
-    "flake8>=7.3.0",
     "numpy>=2.3.3",
     "pandas>=2.3.2",
     "pytorch-lightning>=2.5.5",
@@ -21,10 +36,18 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[project.urls]
+"Homepage" = "https://github.com/tu_usuario/proyecto-entrega-1"
+"Bug Tracker" = "https://github.com/tu_usuario/proyecto-entrega-1/issues"
+
 [project.scripts]
-my_project = "my_project.train:main"
+my_project = "src.my_project.train:main"
 
 [dependency-groups]
 dev = [
     "pdoc>=15.0.4",
+    "black>=25.9.0",
+    "flake8>=7.3.0",
+    "build>=1.3.0",
+    "twine>=6.2.0",
 ]

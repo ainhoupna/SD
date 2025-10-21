@@ -1,0 +1,16 @@
+README.md
+pyproject.toml
+src/my_project/__init__.py
+src/my_project/app.py
+src/my_project/config.py
+src/my_project/dataset.py
+src/my_project/model.py
+src/my_project/plots.py
+src/my_project/train.py
+src/my_project/train_exp1.py
+src/proyecto_entrega_1.egg-info/PKG-INFO
+src/proyecto_entrega_1.egg-info/SOURCES.txt
+src/proyecto_entrega_1.egg-info/dependency_links.txt
+src/proyecto_entrega_1.egg-info/entry_points.txt
+src/proyecto_entrega_1.egg-info/requires.txt
+src/proyecto_entrega_1.egg-info/top_level.txt
