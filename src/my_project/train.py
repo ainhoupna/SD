@@ -1,5 +1,4 @@
-from my_project.config import TRAIN_CSV_PATH, TEST_CSV_PATH
-from my_project.dataset import FashionMNISTCSVDataModule
+from my_project.dataset import FashionMNISTDataModule
 from my_project.model import Net
 from my_project.plots import evaluate_and_plot
 import pytorch_lightning as pl
@@ -40,11 +39,11 @@ def main():
     The main training and evaluation function.
     """
 
-    data_module = FashionMNISTCSVDataModule(
-        train_csv=TRAIN_CSV_PATH,
-        test_csv=TEST_CSV_PATH,
+    data_module = FashionMNISTDataModule(
+        data_dir="data/",
         batch_size=BATCH_SIZE,
         num_workers=NUM_WORKERS,
+        # The num_workers parameter is now accepted by FashionMNISTDataModule
     )
 
     net = Net(num_filters=32, hidden_size=64)

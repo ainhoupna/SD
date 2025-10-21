@@ -1,3 +1,32 @@
+Metadata-Version: 2.4
+Name: fashion-mnist-classifier
+Version: 0.1.6
+Summary: An image classification model for Fashion MNIST using PyTorch Lightning.
+Author-email: Ainhoa Del Rey <delrey.132148@e.unavarra.es>, Iñigo Goikoetxea <goicoechea.128710@e.unavarra.es>, Maria Ines <haddad.179806@e.unavarra.es>
+License: MIT
+Project-URL: Homepage, https://github.com/tu_usuario/fashion-mnist-classifier
+Project-URL: Bug Tracker, https://github.com/tu_usuario/fashion-mnist-classifier/issues
+Keywords: pytorch,lightning,fashion-mnist,image-classification
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=2.3.3
+Requires-Dist: pytorch-lightning>=2.5.5
+Requires-Dist: gradio>=4.0.0
+Requires-Dist: scikit-learn>=1.7.2
+Requires-Dist: seaborn>=0.13.2
+Requires-Dist: torch>=2.8.0
+Requires-Dist: torchvision>=0.23.0
+Requires-Dist: scipy>=1.16.2
+Dynamic: license-file
+
 ## Description
 
 This project implements an image classification model based on the Fashion MNIST dataset, using PyTorch Lightning to structure the code in a modular and scalable way.

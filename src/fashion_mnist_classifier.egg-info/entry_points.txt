@@ -1,0 +1,3 @@
+[console_scripts]
+fashion-mnist-app = my_project.app:main
+fashion-mnist-classifier = my_project.train:main

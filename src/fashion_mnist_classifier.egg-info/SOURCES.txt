@@ -1,0 +1,17 @@
+LICENSE
+README.md
+pyproject.toml
+src/fashion_mnist_classifier.egg-info/PKG-INFO
+src/fashion_mnist_classifier.egg-info/SOURCES.txt
+src/fashion_mnist_classifier.egg-info/dependency_links.txt
+src/fashion_mnist_classifier.egg-info/entry_points.txt
+src/fashion_mnist_classifier.egg-info/requires.txt
+src/fashion_mnist_classifier.egg-info/top_level.txt
+src/my_project/__init__.py
+src/my_project/app.py
+src/my_project/config.py
+src/my_project/dataset.py
+src/my_project/model.py
+src/my_project/plots.py
+src/my_project/train.py
+src/my_project/train_exp1.py

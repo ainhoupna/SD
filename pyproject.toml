@@ -1,6 +1,6 @@
 [project]
-name = "proyecto-entrega-1"
-version = "0.1.0"
+name = "fashion-mnist-classifier"
+version = "0.1.7"
 authors = [
   { name="Ainhoa Del Rey", email="delrey.132148@e.unavarra.es"},
   { name="Iñigo Goikoetxea", email="goicoechea.128710@e.unavarra.es" },
@@ -23,7 +23,6 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=2.3.3",
-    "pandas>=2.3.2",
     "pytorch-lightning>=2.5.5",
     "gradio>=4.0.0",
     "scikit-learn>=1.7.2",
@@ -37,11 +36,12 @@ dependencies = [
 where = ["src"]
 
 [project.urls]
-"Homepage" = "https://github.com/tu_usuario/proyecto-entrega-1"
-"Bug Tracker" = "https://github.com/tu_usuario/proyecto-entrega-1/issues"
+"Homepage" = "https://github.com/tu_usuario/fashion-mnist-classifier"
+"Bug Tracker" = "https://github.com/tu_usuario/fashion-mnist-classifier/issues"
 
 [project.scripts]
-my_project = "src.my_project.train:main"
+fashion-mnist-classifier = "my_project.train:main"
+fashion-mnist-app = "my_project.app:main"
 
 [dependency-groups]
 dev = [

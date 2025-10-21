@@ -9,16 +9,18 @@ class FashionMNISTDataModule(pl.LightningDataModule):
     It handles the downloading, splitting, and loading of the data.
     """
 
-    def __init__(self, data_dir: str = "data/", batch_size: int = 128, val_split: float = 0.2):
+    def __init__(self, data_dir: str = "data/", batch_size: int = 128, val_split: float = 0.2, num_workers: int = 4):
         """
         Args:
             data_dir (str): Directory where the data will be downloaded/stored.
             batch_size (int): The batch size for the data loaders.
             val_split (float): The fraction of the training data to use for validation.
+            num_workers (int): Number of subprocesses to use for data loading.
         """
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
+        self.num_workers = num_workers # Store num_workers
         self.val_split = val_split
         self.transform = transforms.Compose(
             [
@@ -57,10 +59,10 @@ class FashionMNISTDataModule(pl.LightningDataModule):
             self.test_dataset = datasets.FashionMNIST(self.data_dir, train=False, transform=self.transform)
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=4)
+        return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, num_workers=self.num_workers)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=4)
+        return DataLoader(self.val_dataset, batch_size=self.batch_size, num_workers=self.num_workers)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=4)
+        return DataLoader(self.test_dataset, batch_size=self.batch_size, num_workers=self.num_workers)
