@@ -3,25 +3,22 @@
 This project implements an image classification model based on the Fashion MNIST dataset, using PyTorch Lightning to structure the code in a modular and scalable way.
 The dataset is in CSV format, with 28x28 pixel grayscale images and their respective labels. The goal is to train a simple convolutional network that classifies images into 10 different clothing categories.
 
-The goal is to train a simple convolutional neural network (CNN) to classify images into the following categories: T-shirt/top, Trouser, Pullover, Dress, Coat, Sandal, Shirt, Sneaker, Bag, and Ankle boot.
 ## Project Structure
 
-├── data/               # Original and processed datasets
-│   └── raw/            # Fashion-MNIST CSV and IDX files
-├── models/             # Saved models and checkpoints
-├── lightning_logs/     # PyTorch Lightning logs and training runs
-├── my_project/         # Source code
-│   ├── config.py       # Training and configuration parameters
-│   ├── dataset.py      # Custom Dataset and DataModule
-│   ├── model.py        # PyTorch Lightning model definition
-│   ├── train.py        # Training and evaluation script
-│   ├── plots.py        # Visualization utilities
-│   └── EDA.ipynb       # Exploratory Data Analysis notebook
-├── reports/            # Reports and analysis
-│   ├── figures/        # Generated plots and metrics
-│   └── Model_Performance.pdf # Model performance report
-├── README.md           # Project documentation
-├── pyproject.toml      # Dependency management (Poetry)
+data/ # Original and processed data
+ └── raw/ # Original CSV files (fashion-mnist_train.csv, fashion-mnist_test.csv)
+models/ # Trained models, checkpoints, and saved weights
+src/
+ └── my_project/ # Project source code
+     ├── dataset.py # Dataset and DataModule
+     ├── model.py # PyTorch Lightning model
+     ├── train.py # Main training and evaluation script
+     └── config.py # Project configurations and parameters
+tests/ # Tests for the project
+LICENSE # Project license
+README.md # Project documentation
+pyproject.toml # Dependency management and Poetry configuration
+uv.lock # Dependency lock file 
 
 ## Installation
 To install dependencies and prepare the environment with uv, run the following commands in the terminal:
@@ -30,7 +27,35 @@ To install dependencies and prepare the environment with uv, run the following c
 3. Sync dependencies and environment: uv sync
 
 ## Training and Evaluation
-Run in the terminal: uv run python -m my_project.train
+To run the training and evaluation script, first install the package in editable mode:
+
+```bash
+uv pip install -e .
+```
+
+Then, run the following command in the terminal:
+
+```bash
+my_project
+```
+
+## Building and Publishing to PyPI
+To build and publish the package to PyPI, follow these steps:
+
+1.  **Install build tools:**
+    ```bash
+    uv pip install build twine
+    ```
+2.  **Build the package:**
+    ```bash
+    python -m build
+    ```
+3.  **Publish to PyPI:**
+    ```bash
+    twine upload dist/*
+    ```
+    You will be prompted for your PyPI username and password.
+
 
 ## Technical Details
 -Dataset: Custom Dataset that reads images from CSV and applies transformations.
