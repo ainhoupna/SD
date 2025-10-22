@@ -258,5 +258,9 @@ with gr.Blocks(
         ],
     )
 
-if __name__ == "__main__":
+def main():
+    """Launch Gradio interface."""
     demo.launch()
+
+if __name__ == "__main__":
+    main()

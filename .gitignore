@@ -14,7 +14,13 @@ models/
 
 # Generated documentation and reports
 docs/
+data/
 reports/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
 
 # IDE / Editor specific files
 .vscode/

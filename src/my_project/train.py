@@ -12,6 +12,19 @@ This script can be run from the command line to:
 3. Evaluate the trained model on the test set.
 4. Save evaluation figures (like confusion matrix) in `reports/figures/`.
 
+Generated Artifacts
+-------------------
+When you run this script, the following directories and files may be created:
+
+- `data/`:
+  - Contains the downloaded Fashion-MNIST dataset.
+
+- `models/lightning_logs/`:
+  - Stores logs and checkpoints from PyTorch Lightning during training.
+
+- `reports/figures/`:
+  - Contains output visualizations from the evaluation step, such as `confusion_matrix.png`, `per_class_accuracy.png`, etc.
+
 Examples
 --------
 Run training from the command line:
