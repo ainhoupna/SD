@@ -69,11 +69,11 @@ To build and publish the package to PyPI, follow these steps:
 
 
 ## Technical Details
--Dataset: `torchvision.datasets.FashionMNIST` with custom transformations.
--Model: Simple CNN with one convolutional layer, pooling, and fully connected layers.
--Training: Implemented with PyTorch Lightning to facilitate handling epochs, performance, and metrics.
--Configuration: Parameters such as batch size, paths, epochs defined in config.py.
--Optimization: Adam with CrossEntropyLoss.
+-   **Dataset**: `torchvision.datasets.FashionMNIST` with custom transformations.
+-   **Model**: Simple CNN with one convolutional layer, pooling, and fully connected layers.
+-   **Training**: Implemented with PyTorch Lightning to facilitate handling epochs, performance, and metrics.
+-   **Configuration**: Parameters such as batch size, paths, epochs defined in config.py.
+-   **Optimization**: Adam with CrossEntropyLoss.
 
 ## Generated Artifacts
 

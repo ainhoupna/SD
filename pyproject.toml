@@ -1,6 +1,6 @@
 [project]
 name = "fashion-mnist-classifier"
-version = "0.1.7"
+version = "0.1.9"
 authors = [
   { name="Ainhoa Del Rey", email="delrey.132148@e.unavarra.es"},
   { name="Iñigo Goikoetxea", email="goicoechea.128710@e.unavarra.es" },
