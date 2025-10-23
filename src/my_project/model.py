@@ -1,3 +1,11 @@
+"""
+Defines the neural network architecture for the Fashion-MNIST classifier.
+
+This module contains the `Net` class, a PyTorch LightningModule that
+encapsulates the model's structure (a simple CNN), the forward pass logic,
+and the training, validation, and test steps.
+"""
+
 import torch
 import torch.nn as nn
 import torch.optim as optim

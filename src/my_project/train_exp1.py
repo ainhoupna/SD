@@ -1,4 +1,10 @@
-from my_project.config import TRAIN_CSV_PATH, TEST_CSV_PATH, NUM_WORKERS
+"""
+Experimental configuration parameters for a specific training run.
+
+This file is intended to store a set of hyperparameters for a particular
+experiment (e.g., `exp1`). It is not currently used by the main training
+script but serves as an example of how to manage different experimental setups.
+"""
 
 EXP_PARAMS = {
     "batch_size": 64,

@@ -1,9 +1,3 @@
-from my_project.dataset import FashionMNISTDataModule
-from my_project.model import Net
-from my_project.plots import evaluate_and_plot
-from my_project.config import BATCH_SIZE, NUM_WORKERS, MAX_EPOCHS
-import pytorch_lightning as pl
-
 """
 Train and evaluate the Fashion-MNIST model.
 
@@ -32,6 +26,14 @@ Run training from the command line:
 
 >>> python -m my_project.train
 """
+
+from my_project.dataset import FashionMNISTDataModule
+from my_project.model import Net
+from my_project.plots import evaluate_and_plot
+from my_project.config import BATCH_SIZE, NUM_WORKERS, MAX_EPOCHS
+import pytorch_lightning as pl
+
+
 
 def main():
     """

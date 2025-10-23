@@ -21,9 +21,24 @@
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
 
+            <h2>Contents</h2>
+            <ul>
+  <li><a href="#fashion-mnist-classifier">Fashion-MNIST Classifier</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li><a href="#project-structure">Project Structure</a></li>
+  <li><a href="#training-and-evaluation">Training and Evaluation</a></li>
+  <li><a href="#building-and-publishing-to-pypi">Building and Publishing to PyPI</a></li>
+  <li><a href="#technical-details">Technical Details</a></li>
+  <li><a href="#generated-artifacts">Generated Artifacts</a></li>
+  <li><a href="#reports-visualizations">Reports &amp; Visualizations</a></li>
+  <li><a href="#generating-pdf-report-with-typst">Generating PDF Report with Typst</a></li>
+  <li><a href="#contact">Contact</a></li>
+</ul>
+
 
             <h2>Submodules</h2>
             <ul>
+                    <li><a href="my_project/app.html">app</a></li>
                     <li><a href="my_project/config.html">config</a></li>
                     <li><a href="my_project/dataset.html">dataset</a></li>
                     <li><a href="my_project/model.html">model</a></li>
@@ -46,12 +61,178 @@
                     <h1 class="modulename">
 my_project    </h1>
 
-                
+                        <div class="docstring"><p>My Project: Fashion-MNIST Image Classification</p>
+
+<h2 id="fashion-mnist-classifier">Fashion-MNIST Classifier</h2>
+
+<p>This project implements an image classification model based on the Fashion MNIST dataset, using PyTorch Lightning to structure the code in a modular and scalable way.
+The dataset is loaded directly from <code>torchvision.datasets</code>. The goal is to train a simple convolutional network that classifies images into 10 different clothing categories.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>To install dependencies and prepare the environment with uv, run the following commands in the terminal:</p>
+
+<ol>
+<li>Download and install dependencies: <code>curl -sSf https://uv.io/install.sh | sh</code></li>
+<li>Initialize the environment: <code>uv init</code></li>
+<li>Sync dependencies and environment: <code>uv sync</code></li>
+</ol>
+
+<h2 id="project-structure">Project Structure</h2>
+
+<pre><code>fashion-mnist-classifier/
+├── models/               # Directory for saved models and checkpoints
+├── reports/              # Evaluation reports and generated figures
+├── src/
+│   └── my_project/       # Project source code
+│       ├── __init__.py
+│       ├── app.py        # Gradio application
+│       ├── config.py     # Configurations and parameters
+│       ├── dataset.py    # Dataset and DataModule
+│       ├── model.py      # PyTorch Lightning model
+│       ├── plots.py      # Visualization functions
+│       └── train.py      # Main training script
+├── .gitignore
+├── LICENSE               # Project license
+├── pyproject.toml        # Project metadata and dependencies
+└── README.md             # This file
+</code></pre>
+
+<h2 id="training-and-evaluation">Training and Evaluation</h2>
+
+<p>You can run the training and evaluation script using <code>uvx</code>, which executes the project's command-line scripts without needing to install the package in editable mode.</p>
+
+<p>To run the training script:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>uvx<span class="w"> </span>fashion-mnist-classifier
+</code></pre>
+</div>
+
+<p>To run the app:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>fashion-mnist-classifier<span class="w"> </span>fashion-mnist-app
+</code></pre>
+</div>
+
+<h2 id="building-and-publishing-to-pypi">Building and Publishing to PyPI</h2>
+
+<p>To build and publish the package to PyPI, follow these steps:</p>
+
+<ol>
+<li><p><strong>Install build tools:</strong></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>build<span class="w"> </span>twine
+</code></pre>
+</div></li>
+<li><p><strong>Build the package:</strong></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>build
+</code></pre>
+</div></li>
+<li><p><strong>Publish to PyPI:</strong></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code>twine<span class="w"> </span>upload<span class="w"> </span>dist/*
+</code></pre>
+</div>
+
+<p>You will be prompted for your PyPI username and password.</p></li>
+</ol>
+
+<h2 id="technical-details">Technical Details</h2>
+
+<ul>
+<li><strong>Dataset</strong>: <code>torchvision.datasets.FashionMNIST</code> with custom transformations.</li>
+<li><strong>Model</strong>: Simple CNN with one convolutional layer, pooling, and fully connected layers.</li>
+<li><strong>Training</strong>: Implemented with PyTorch Lightning to facilitate handling epochs, performance, and metrics.</li>
+<li><strong>Configuration</strong>: Parameters such as batch size, paths, epochs defined in config.py.</li>
+<li><strong>Optimization</strong>: Adam with CrossEntropyLoss.</li>
+</ul>
+
+<h2 id="generated-artifacts">Generated Artifacts</h2>
+
+<p>When you run the training script (<code>src/my_project/train.py</code>) or the Gradio application (<code>src/my_project/app.py</code>), the following directories and files are created or updated:</p>
+
+<ul>
+<li><strong><code>data/</code></strong>:
+<ul>
+<li>Contains the downloaded Fashion-MNIST dataset files (e.g., <code>FashionMNIST/raw/train-images-idx3-ubyte.gz</code>).</li>
+</ul></li>
+<li><strong><code>models/lightning_logs/</code></strong>:
+<ul>
+<li>Stores logs and checkpoints generated by PyTorch Lightning during training. This typically includes:
+<ul>
+<li><code>version_X/checkpoints/</code>: Model checkpoints (e.g., <code>epoch=4-step=2340.ckpt</code>).</li>
+<li><code>version_X/metrics.csv</code>: Training and validation metrics logged by <code>CSVLogger</code>.</li>
+</ul></li>
+</ul></li>
+<li><strong><code>reports/figures/</code></strong>:
+<ul>
+<li>Contains output visualizations from the evaluation step and data exploration. These include:
+<ul>
+<li><code>confusion_matrix.png</code>: Confusion matrix of model predictions on the test set.</li>
+<li><code>per_class_accuracy.png</code>: Bar chart showing accuracy for each class.</li>
+<li><code>misclassified_grid.png</code>: Grid of misclassified sample images from the test set.</li>
+<li><code>calibration_curve.png</code>: Reliability diagram for model calibration.</li>
+<li><code>train_loss_*.png</code>: Plots of training loss over steps/epochs (generated if <code>CSVLogger</code> is used).</li>
+<li><code>val_acc_*.png</code>: Plots of validation accuracy over epochs (generated if <code>CSVLogger</code> is used).</li>
+<li><code>class_distribution.png</code>: Plot showing the distribution of samples per class in the dataset.</li>
+<li><code>class_correlation_dendrogram.png</code>: Dendrogram illustrating class similarity based on mean images.</li>
+</ul></li>
+<li><code>reports/figures/gradio/</code>: A subdirectory specifically for figures generated when using the Gradio application.</li>
+</ul></li>
+</ul>
+
+<h2 id="reports-visualizations">Reports &amp; Visualizations</h2>
+
+<p>The project generates various reports and visualizations to assess model performance and explore the dataset. Details on the specific files and their locations can be found in the Generated Artifacts section.</p>
+
+<p>Key visualizations include:</p>
+
+<ul>
+<li><strong>Confusion matrix</strong>: Shows the performance of the classification model.</li>
+<li><strong>Per-class accuracy</strong>: Illustrates how well the model performs on each individual class.</li>
+<li><strong>Calibration curve</strong>: Assesses the confidence of the model's predictions.</li>
+<li><strong>Misclassified image grids</strong>: Displays examples of images that the model predicted incorrectly.</li>
+<li><strong>Class distribution plots</strong>: Visualizes the balance of classes within the dataset.</li>
+<li><strong>Class similarity dendrograms</strong>: Helps understand relationships between different clothing categories based on their image features.</li>
+<li><strong>Training loss and validation accuracy curves</strong>: Track the model's learning progress over epochs.</li>
+</ul>
+
+<h2 id="generating-pdf-report-with-typst">Generating PDF Report with Typst</h2>
+
+<p>This project uses <a href="https://typst.app/">Typst</a> to generate a PDF report from the model's results and visualizations.</p>
+
+<h3 id="installation-2">Installation</h3>
+
+<p>To compile the report, you first need to install Typst. You can find installation instructions for your operating system on the <a href="https://github.com/typst/typst#installation">official Typst GitHub repository</a>.</p>
+
+<h3 id="compiling-the-report">Compiling the Report</h3>
+
+<p>Once Typst is installed, navigate to the <code>reports</code> directory and compile the <code>main.typ</code> file. This will generate a report file in the same directory, containing a summary of the project, including the generated plots and evaluation metrics.</p>
+
+<h2 id="contact">Contact</h2>
+
+<ul>
+<li>delrey.132148@e.unavarra.es</li>
+<li>goicoechea.128710@e.unavarra.es</li>
+<li>haddad.179806@e.unavarra.es</li>
+</ul>
+</div>
+
                         <input id="mod-my_project-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-my_project-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a><span class="sd">My Project: Fashion-MNIST Image Classification</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="sd">.. include:: ../../README.md</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span></pre></div>
 
 

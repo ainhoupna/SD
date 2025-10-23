@@ -1,3 +1,17 @@
+"""
+Gradio application for interactive Fashion-MNIST model training and data exploration.
+
+This script launches a web-based interface with two main tabs:
+1.  **Data Exploration**: Allows users to visualize the Fashion-MNIST dataset.
+    Users can switch between training and test sets, view class distributions,
+    see a class similarity dendrogram, and browse a gallery of sample images
+    with filtering options.
+
+2.  **Train & Evaluate**: Provides an interface to train a model with adjustable
+    hyperparameters (e.g., batch size, learning rate, epochs). After training,
+    it displays evaluation results, including test accuracy, learning curves,
+    a confusion matrix, and other performance plots.
+"""
 import gradio as gr
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import CSVLogger

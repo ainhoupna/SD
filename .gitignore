@@ -13,7 +13,6 @@ lightning_logs/
 models/
 
 # Generated documentation and reports
-docs/
 data/
 reports/
 

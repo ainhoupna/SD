@@ -31,55 +31,52 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="class" href="#FashionMNISTCSVDataset">FashionMNISTCSVDataset</a>
+                    <a class="class" href="#FashionMNISTDataModule">FashionMNISTDataModule</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#FashionMNISTCSVDataset.__init__">FashionMNISTCSVDataset</a>
+                                <a class="function" href="#FashionMNISTDataModule.__init__">FashionMNISTDataModule</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataset.data_frame">data_frame</a>
+                                <a class="variable" href="#FashionMNISTDataModule.data_dir">data_dir</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataset.transform">transform</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#FashionMNISTCSVDataModule">FashionMNISTCSVDataModule</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#FashionMNISTCSVDataModule.__init__">FashionMNISTCSVDataModule</a>
+                                <a class="variable" href="#FashionMNISTDataModule.batch_size">batch_size</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataModule.train_csv">train_csv</a>
+                                <a class="variable" href="#FashionMNISTDataModule.num_workers">num_workers</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataModule.test_csv">test_csv</a>
+                                <a class="variable" href="#FashionMNISTDataModule.val_split">val_split</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataModule.batch_size">batch_size</a>
+                                <a class="variable" href="#FashionMNISTDataModule.transform">transform</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataModule.num_workers">num_workers</a>
+                                <a class="variable" href="#FashionMNISTDataModule.train_dataset">train_dataset</a>
                         </li>
                         <li>
-                                <a class="variable" href="#FashionMNISTCSVDataModule.transform">transform</a>
+                                <a class="variable" href="#FashionMNISTDataModule.val_dataset">val_dataset</a>
                         </li>
                         <li>
-                                <a class="function" href="#FashionMNISTCSVDataModule.prepare_data">prepare_data</a>
+                                <a class="variable" href="#FashionMNISTDataModule.test_dataset">test_dataset</a>
                         </li>
                         <li>
-                                <a class="function" href="#FashionMNISTCSVDataModule.setup">setup</a>
+                                <a class="variable" href="#FashionMNISTDataModule.train_val_dataset">train_val_dataset</a>
                         </li>
                         <li>
-                                <a class="function" href="#FashionMNISTCSVDataModule.train_dataloader">train_dataloader</a>
+                                <a class="function" href="#FashionMNISTDataModule.prepare_data">prepare_data</a>
                         </li>
                         <li>
-                                <a class="function" href="#FashionMNISTCSVDataModule.val_dataloader">val_dataloader</a>
+                                <a class="function" href="#FashionMNISTDataModule.setup">setup</a>
                         </li>
                         <li>
-                                <a class="function" href="#FashionMNISTCSVDataModule.test_dataloader">test_dataloader</a>
+                                <a class="function" href="#FashionMNISTDataModule.train_dataloader">train_dataloader</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#FashionMNISTDataModule.val_dataloader">val_dataloader</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#FashionMNISTDataModule.test_dataloader">test_dataloader</a>
                         </li>
                 </ul>
 
@@ -100,617 +97,406 @@
                     <h1 class="modulename">
 <a href="./../my_project.html">my_project</a><wbr>.dataset    </h1>
 
-                
+                        <div class="docstring"><p>Defines the PyTorch Lightning DataModule for the Fashion-MNIST dataset.</p>
+
+<p>This module is responsible for:</p>
+
+<ul>
+<li>Downloading the Fashion-MNIST dataset.</li>
+<li>Applying necessary transformations (e.g., normalization).</li>
+<li>Splitting the data into training, validation, and test sets.</li>
+<li>Creating and providing DataLoaders for each set.</li>
+</ul>
+</div>
+
                         <input id="mod-dataset-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-dataset-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">torchvision</span><span class="w"> </span><span class="kn">import</span> <span class="n">transforms</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">pytorch_lightning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FashionMNISTCSVDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="sd">    Custom Dataset for Fashion-MNIST stored in CSV format.</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="sd">    Each row in the CSV file contains:</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="sd">    - column 0: label (0–9, corresponding to a clothing category)</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="sd">    - columns 1–784: flattened pixel values (28x28 grayscale image)</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="sd">    Parameters</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="sd">    ----------</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="sd">    csv_file : str</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        Path to the CSV file containing the dataset.</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">    transform : callable, optional</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">        Transformation to apply to the images (e.g., `transforms.ToTensor()`).</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">    Examples</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">    --------</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    &gt;&gt;&gt; ds = FashionMNISTCSVDataset(&quot;data/raw/fashion-mnist_train.csv&quot;)</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">    &gt;&gt;&gt; len(ds)</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">    60000</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">    &gt;&gt;&gt; img, label = ds[0]</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">    &gt;&gt;&gt; img.shape</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">    torch.Size([1, 28, 28])</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="p">)</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="n">image</span> <span class="o">=</span> <span class="n">image_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>            <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FashionMNISTCSVDataModule</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">):</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">    PyTorch Lightning DataModule for the Fashion-MNIST dataset (CSV format).</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    This module wraps train, validation, and test datasets</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">    into corresponding DataLoaders for Lightning.</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">    Parameters</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    ----------</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">    train_csv : str</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        Path to the training CSV file.</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    test_csv : str</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        Path to the test CSV file.</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">    batch_size : int, optional (default=64)</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        Batch size for training and evaluation.</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">    num_workers : int, optional (default=8)</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">        Number of worker processes for data loading.</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">    Examples</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    --------</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">    &gt;&gt;&gt; dm = FashionMNISTCSVDataModule(</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">    ...     train_csv=&quot;data/raw/fashion-mnist_train.csv&quot;,</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">    ...     test_csv=&quot;data/raw/fashion-mnist_test.csv&quot;</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">    ... )</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">    &gt;&gt;&gt; dm.setup(&quot;fit&quot;)</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">    &gt;&gt;&gt; len(dm.train_dataloader())</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    938</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_csv</span><span class="p">,</span> <span class="n">test_csv</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_csv</span> <span class="o">=</span> <span class="n">train_csv</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span> <span class="o">=</span> <span class="n">test_csv</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">        Placeholder for dataset preparation.</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">        This method is part of the LightningDataModule interface,</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">        but here it does nothing since data is already available.</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">        Returns</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        -------</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        None</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="k">pass</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">        Setup datasets for training, validation, and testing.</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        Parameters</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">        ----------</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        stage : str or None, optional</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">            Current stage (&quot;fit&quot;, &quot;test&quot;, or None).</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">            If None, both training/validation and test datasets are initialized.</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="sd">        Returns</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">        -------</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">        None</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;fit&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">train_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>            <span class="p">)</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>            <span class="p">)</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>            <span class="p">)</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_ds</span><span class="p">,</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>            <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>            <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>            <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>        <span class="p">)</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">val_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Defines the PyTorch Lightning DataModule for the Fashion-MNIST dataset.</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">This module is responsible for:</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">- Downloading the Fashion-MNIST dataset.</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">- Applying necessary transformations (e.g., normalization).</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">- Splitting the data into training, validation, and test sets.</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">- Creating and providing DataLoaders for each set.</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">pytorch_lightning</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">random_split</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">torchvision</span><span class="w"> </span><span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FashionMNISTDataModule</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">):</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">    PyTorch Lightning DataModule for the Fashion-MNIST dataset.</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    It handles the downloading, splitting, and loading of the data.</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span> <span class="n">val_split</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">        Args:</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">            data_dir (str): Directory where the data will be downloaded/stored.</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">            batch_size (int): The batch size for the data loaders.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">            val_split (float): The fraction of the training data to use for validation.</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">            num_workers (int): Number of subprocesses to use for data loading.</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">data_dir</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span> <span class="c1"># Store num_workers</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_split</span> <span class="o">=</span> <span class="n">val_split</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="p">[</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>                <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,)),</span>  <span class="c1"># Normalize to [-1, 1]</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="p">]</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># For data exploration tab</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">        Downloads the Fashion-MNIST dataset if it&#39;s not already present.</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="sd">        This method is called only on a single GPU/process.</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="sd">        Assigns train/val/test datasets for dataloaders.</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">        This method is called on every GPU.</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="c1"># Assign train/val datasets for use in dataloaders</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;fit&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>            <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span><span class="p">)</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>            <span class="n">n_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_split</span> <span class="o">*</span> <span class="n">n_samples</span><span class="p">)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>            <span class="n">n_train</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">-</span> <span class="n">n_val</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span><span class="p">,</span> <span class="p">[</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_val</span><span class="p">])</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="c1"># Assign test dataset for use in dataloader(s)</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">val_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
-                <section id="FashionMNISTCSVDataset">
-                            <input id="FashionMNISTCSVDataset-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="FashionMNISTDataModule">
+                            <input id="FashionMNISTDataModule-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">FashionMNISTCSVDataset</span><wbr>(<span class="base">typing.Generic[+_T_co]</span>):
+    <span class="name">FashionMNISTDataModule</span><wbr>(<span class="base">pytorch_lightning.core.datamodule.LightningDataModule</span>):
 
-                <label class="view-source-button" for="FashionMNISTCSVDataset-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataset"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataset-10"><a href="#FashionMNISTCSVDataset-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FashionMNISTCSVDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataset-11"><a href="#FashionMNISTCSVDataset-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataset-12"><a href="#FashionMNISTCSVDataset-12"><span class="linenos">12</span></a><span class="sd">    Custom Dataset for Fashion-MNIST stored in CSV format.</span>
-</span><span id="FashionMNISTCSVDataset-13"><a href="#FashionMNISTCSVDataset-13"><span class="linenos">13</span></a>
-</span><span id="FashionMNISTCSVDataset-14"><a href="#FashionMNISTCSVDataset-14"><span class="linenos">14</span></a><span class="sd">    Each row in the CSV file contains:</span>
-</span><span id="FashionMNISTCSVDataset-15"><a href="#FashionMNISTCSVDataset-15"><span class="linenos">15</span></a><span class="sd">    - column 0: label (0–9, corresponding to a clothing category)</span>
-</span><span id="FashionMNISTCSVDataset-16"><a href="#FashionMNISTCSVDataset-16"><span class="linenos">16</span></a><span class="sd">    - columns 1–784: flattened pixel values (28x28 grayscale image)</span>
-</span><span id="FashionMNISTCSVDataset-17"><a href="#FashionMNISTCSVDataset-17"><span class="linenos">17</span></a>
-</span><span id="FashionMNISTCSVDataset-18"><a href="#FashionMNISTCSVDataset-18"><span class="linenos">18</span></a><span class="sd">    Parameters</span>
-</span><span id="FashionMNISTCSVDataset-19"><a href="#FashionMNISTCSVDataset-19"><span class="linenos">19</span></a><span class="sd">    ----------</span>
-</span><span id="FashionMNISTCSVDataset-20"><a href="#FashionMNISTCSVDataset-20"><span class="linenos">20</span></a><span class="sd">    csv_file : str</span>
-</span><span id="FashionMNISTCSVDataset-21"><a href="#FashionMNISTCSVDataset-21"><span class="linenos">21</span></a><span class="sd">        Path to the CSV file containing the dataset.</span>
-</span><span id="FashionMNISTCSVDataset-22"><a href="#FashionMNISTCSVDataset-22"><span class="linenos">22</span></a><span class="sd">    transform : callable, optional</span>
-</span><span id="FashionMNISTCSVDataset-23"><a href="#FashionMNISTCSVDataset-23"><span class="linenos">23</span></a><span class="sd">        Transformation to apply to the images (e.g., `transforms.ToTensor()`).</span>
-</span><span id="FashionMNISTCSVDataset-24"><a href="#FashionMNISTCSVDataset-24"><span class="linenos">24</span></a>
-</span><span id="FashionMNISTCSVDataset-25"><a href="#FashionMNISTCSVDataset-25"><span class="linenos">25</span></a><span class="sd">    Examples</span>
-</span><span id="FashionMNISTCSVDataset-26"><a href="#FashionMNISTCSVDataset-26"><span class="linenos">26</span></a><span class="sd">    --------</span>
-</span><span id="FashionMNISTCSVDataset-27"><a href="#FashionMNISTCSVDataset-27"><span class="linenos">27</span></a><span class="sd">    &gt;&gt;&gt; ds = FashionMNISTCSVDataset(&quot;data/raw/fashion-mnist_train.csv&quot;)</span>
-</span><span id="FashionMNISTCSVDataset-28"><a href="#FashionMNISTCSVDataset-28"><span class="linenos">28</span></a><span class="sd">    &gt;&gt;&gt; len(ds)</span>
-</span><span id="FashionMNISTCSVDataset-29"><a href="#FashionMNISTCSVDataset-29"><span class="linenos">29</span></a><span class="sd">    60000</span>
-</span><span id="FashionMNISTCSVDataset-30"><a href="#FashionMNISTCSVDataset-30"><span class="linenos">30</span></a><span class="sd">    &gt;&gt;&gt; img, label = ds[0]</span>
-</span><span id="FashionMNISTCSVDataset-31"><a href="#FashionMNISTCSVDataset-31"><span class="linenos">31</span></a><span class="sd">    &gt;&gt;&gt; img.shape</span>
-</span><span id="FashionMNISTCSVDataset-32"><a href="#FashionMNISTCSVDataset-32"><span class="linenos">32</span></a><span class="sd">    torch.Size([1, 28, 28])</span>
-</span><span id="FashionMNISTCSVDataset-33"><a href="#FashionMNISTCSVDataset-33"><span class="linenos">33</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataset-34"><a href="#FashionMNISTCSVDataset-34"><span class="linenos">34</span></a>
-</span><span id="FashionMNISTCSVDataset-35"><a href="#FashionMNISTCSVDataset-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataset-36"><a href="#FashionMNISTCSVDataset-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset-37"><a href="#FashionMNISTCSVDataset-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataset-38"><a href="#FashionMNISTCSVDataset-38"><span class="linenos">38</span></a>
-</span><span id="FashionMNISTCSVDataset-39"><a href="#FashionMNISTCSVDataset-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataset-40"><a href="#FashionMNISTCSVDataset-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset-41"><a href="#FashionMNISTCSVDataset-41"><span class="linenos">41</span></a>
-</span><span id="FashionMNISTCSVDataset-42"><a href="#FashionMNISTCSVDataset-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataset-43"><a href="#FashionMNISTCSVDataset-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataset-44"><a href="#FashionMNISTCSVDataset-44"><span class="linenos">44</span></a>            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-</span><span id="FashionMNISTCSVDataset-45"><a href="#FashionMNISTCSVDataset-45"><span class="linenos">45</span></a>        <span class="n">image_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset-46"><a href="#FashionMNISTCSVDataset-46"><span class="linenos">46</span></a>        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="FashionMNISTCSVDataset-47"><a href="#FashionMNISTCSVDataset-47"><span class="linenos">47</span></a>        <span class="n">image</span> <span class="o">=</span> <span class="n">image_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset-48"><a href="#FashionMNISTCSVDataset-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
-</span><span id="FashionMNISTCSVDataset-49"><a href="#FashionMNISTCSVDataset-49"><span class="linenos">49</span></a>            <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset-50"><a href="#FashionMNISTCSVDataset-50"><span class="linenos">50</span></a>            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset-51"><a href="#FashionMNISTCSVDataset-51"><span class="linenos">51</span></a>        <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+    <a class="headerlink" href="#FashionMNISTDataModule"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule-17"><a href="#FashionMNISTDataModule-17"><span class="linenos">17</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FashionMNISTDataModule</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-18"><a href="#FashionMNISTDataModule-18"><span class="linenos">18</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-19"><a href="#FashionMNISTDataModule-19"><span class="linenos">19</span></a><span class="sd">    PyTorch Lightning DataModule for the Fashion-MNIST dataset.</span>
+</span><span id="FashionMNISTDataModule-20"><a href="#FashionMNISTDataModule-20"><span class="linenos">20</span></a><span class="sd">    It handles the downloading, splitting, and loading of the data.</span>
+</span><span id="FashionMNISTDataModule-21"><a href="#FashionMNISTDataModule-21"><span class="linenos">21</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-22"><a href="#FashionMNISTDataModule-22"><span class="linenos">22</span></a>
+</span><span id="FashionMNISTDataModule-23"><a href="#FashionMNISTDataModule-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span> <span class="n">val_split</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-24"><a href="#FashionMNISTDataModule-24"><span class="linenos">24</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-25"><a href="#FashionMNISTDataModule-25"><span class="linenos">25</span></a><span class="sd">        Args:</span>
+</span><span id="FashionMNISTDataModule-26"><a href="#FashionMNISTDataModule-26"><span class="linenos">26</span></a><span class="sd">            data_dir (str): Directory where the data will be downloaded/stored.</span>
+</span><span id="FashionMNISTDataModule-27"><a href="#FashionMNISTDataModule-27"><span class="linenos">27</span></a><span class="sd">            batch_size (int): The batch size for the data loaders.</span>
+</span><span id="FashionMNISTDataModule-28"><a href="#FashionMNISTDataModule-28"><span class="linenos">28</span></a><span class="sd">            val_split (float): The fraction of the training data to use for validation.</span>
+</span><span id="FashionMNISTDataModule-29"><a href="#FashionMNISTDataModule-29"><span class="linenos">29</span></a><span class="sd">            num_workers (int): Number of subprocesses to use for data loading.</span>
+</span><span id="FashionMNISTDataModule-30"><a href="#FashionMNISTDataModule-30"><span class="linenos">30</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-31"><a href="#FashionMNISTDataModule-31"><span class="linenos">31</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="FashionMNISTDataModule-32"><a href="#FashionMNISTDataModule-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">data_dir</span>
+</span><span id="FashionMNISTDataModule-33"><a href="#FashionMNISTDataModule-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+</span><span id="FashionMNISTDataModule-34"><a href="#FashionMNISTDataModule-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span> <span class="c1"># Store num_workers</span>
+</span><span id="FashionMNISTDataModule-35"><a href="#FashionMNISTDataModule-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_split</span> <span class="o">=</span> <span class="n">val_split</span>
+</span><span id="FashionMNISTDataModule-36"><a href="#FashionMNISTDataModule-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+</span><span id="FashionMNISTDataModule-37"><a href="#FashionMNISTDataModule-37"><span class="linenos">37</span></a>            <span class="p">[</span>
+</span><span id="FashionMNISTDataModule-38"><a href="#FashionMNISTDataModule-38"><span class="linenos">38</span></a>                <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+</span><span id="FashionMNISTDataModule-39"><a href="#FashionMNISTDataModule-39"><span class="linenos">39</span></a>                <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,)),</span>  <span class="c1"># Normalize to [-1, 1]</span>
+</span><span id="FashionMNISTDataModule-40"><a href="#FashionMNISTDataModule-40"><span class="linenos">40</span></a>            <span class="p">]</span>
+</span><span id="FashionMNISTDataModule-41"><a href="#FashionMNISTDataModule-41"><span class="linenos">41</span></a>        <span class="p">)</span>
+</span><span id="FashionMNISTDataModule-42"><a href="#FashionMNISTDataModule-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="FashionMNISTDataModule-43"><a href="#FashionMNISTDataModule-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="FashionMNISTDataModule-44"><a href="#FashionMNISTDataModule-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="FashionMNISTDataModule-45"><a href="#FashionMNISTDataModule-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># For data exploration tab</span>
+</span><span id="FashionMNISTDataModule-46"><a href="#FashionMNISTDataModule-46"><span class="linenos">46</span></a>
+</span><span id="FashionMNISTDataModule-47"><a href="#FashionMNISTDataModule-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-48"><a href="#FashionMNISTDataModule-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-49"><a href="#FashionMNISTDataModule-49"><span class="linenos">49</span></a><span class="sd">        Downloads the Fashion-MNIST dataset if it&#39;s not already present.</span>
+</span><span id="FashionMNISTDataModule-50"><a href="#FashionMNISTDataModule-50"><span class="linenos">50</span></a><span class="sd">        This method is called only on a single GPU/process.</span>
+</span><span id="FashionMNISTDataModule-51"><a href="#FashionMNISTDataModule-51"><span class="linenos">51</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-52"><a href="#FashionMNISTDataModule-52"><span class="linenos">52</span></a>        <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-53"><a href="#FashionMNISTDataModule-53"><span class="linenos">53</span></a>        <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-54"><a href="#FashionMNISTDataModule-54"><span class="linenos">54</span></a>
+</span><span id="FashionMNISTDataModule-55"><a href="#FashionMNISTDataModule-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-56"><a href="#FashionMNISTDataModule-56"><span class="linenos">56</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-57"><a href="#FashionMNISTDataModule-57"><span class="linenos">57</span></a><span class="sd">        Assigns train/val/test datasets for dataloaders.</span>
+</span><span id="FashionMNISTDataModule-58"><a href="#FashionMNISTDataModule-58"><span class="linenos">58</span></a><span class="sd">        This method is called on every GPU.</span>
+</span><span id="FashionMNISTDataModule-59"><a href="#FashionMNISTDataModule-59"><span class="linenos">59</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule-60"><a href="#FashionMNISTDataModule-60"><span class="linenos">60</span></a>        <span class="c1"># Assign train/val datasets for use in dataloaders</span>
+</span><span id="FashionMNISTDataModule-61"><a href="#FashionMNISTDataModule-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;fit&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FashionMNISTDataModule-62"><a href="#FashionMNISTDataModule-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-63"><a href="#FashionMNISTDataModule-63"><span class="linenos">63</span></a>            <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-64"><a href="#FashionMNISTDataModule-64"><span class="linenos">64</span></a>            <span class="n">n_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_split</span> <span class="o">*</span> <span class="n">n_samples</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-65"><a href="#FashionMNISTDataModule-65"><span class="linenos">65</span></a>            <span class="n">n_train</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">-</span> <span class="n">n_val</span>
+</span><span id="FashionMNISTDataModule-66"><a href="#FashionMNISTDataModule-66"><span class="linenos">66</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span><span class="p">,</span> <span class="p">[</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_val</span><span class="p">])</span>
+</span><span id="FashionMNISTDataModule-67"><a href="#FashionMNISTDataModule-67"><span class="linenos">67</span></a>
+</span><span id="FashionMNISTDataModule-68"><a href="#FashionMNISTDataModule-68"><span class="linenos">68</span></a>        <span class="c1"># Assign test dataset for use in dataloader(s)</span>
+</span><span id="FashionMNISTDataModule-69"><a href="#FashionMNISTDataModule-69"><span class="linenos">69</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FashionMNISTDataModule-70"><a href="#FashionMNISTDataModule-70"><span class="linenos">70</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-71"><a href="#FashionMNISTDataModule-71"><span class="linenos">71</span></a>
+</span><span id="FashionMNISTDataModule-72"><a href="#FashionMNISTDataModule-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-73"><a href="#FashionMNISTDataModule-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-74"><a href="#FashionMNISTDataModule-74"><span class="linenos">74</span></a>
+</span><span id="FashionMNISTDataModule-75"><a href="#FashionMNISTDataModule-75"><span class="linenos">75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">val_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-76"><a href="#FashionMNISTDataModule-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule-77"><a href="#FashionMNISTDataModule-77"><span class="linenos">77</span></a>
+</span><span id="FashionMNISTDataModule-78"><a href="#FashionMNISTDataModule-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule-79"><a href="#FashionMNISTDataModule-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Custom Dataset for Fashion-MNIST stored in CSV format.</p>
-
-<p>Each row in the CSV file contains:</p>
-
-<ul>
-<li>column 0: label (0–9, corresponding to a clothing category)</li>
-<li>columns 1–784: flattened pixel values (28x28 grayscale image)</li>
-</ul>
-
-<h2 id="parameters">Parameters</h2>
-
-<p>csv_file : str
-    Path to the CSV file containing the dataset.
-transform : callable, optional
-    Transformation to apply to the images (e.g., <code>transforms.ToTensor()</code>).</p>
-
-<h2 id="examples">Examples</h2>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span><span class="s2">&quot;data/raw/fashion-mnist_train.csv&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
-<span class="go">60000</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">img</span><span class="o">.</span><span class="n">shape</span>
-<span class="go">torch.Size([1, 28, 28])</span>
-</code></pre>
-</div>
+            <div class="docstring"><p>PyTorch Lightning DataModule for the Fashion-MNIST dataset.
+It handles the downloading, splitting, and loading of the data.</p>
 </div>
 
 
-                            <div id="FashionMNISTCSVDataset.__init__" class="classattr">
-                                        <input id="FashionMNISTCSVDataset.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FashionMNISTDataModule.__init__" class="classattr">
+                                        <input id="FashionMNISTDataModule.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">FashionMNISTCSVDataset</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">csv_file</span>, </span><span class="param"><span class="n">transform</span><span class="o">=</span><span class="kc">None</span></span>)</span>
+        <span class="name">FashionMNISTDataModule</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;data/&#39;</span>,</span><span class="param">	<span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span>,</span><span class="param">	<span class="n">val_split</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span>,</span><span class="param">	<span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span></span>)</span>
 
-                <label class="view-source-button" for="FashionMNISTCSVDataset.__init__-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule.__init__-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataset.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataset.__init__-35"><a href="#FashionMNISTCSVDataset.__init__-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataset.__init__-36"><a href="#FashionMNISTCSVDataset.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataset.__init__-37"><a href="#FashionMNISTCSVDataset.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+    <a class="headerlink" href="#FashionMNISTDataModule.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule.__init__-23"><a href="#FashionMNISTDataModule.__init__-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data/&quot;</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span> <span class="n">val_split</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">num_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule.__init__-24"><a href="#FashionMNISTDataModule.__init__-24"><span class="linenos">24</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule.__init__-25"><a href="#FashionMNISTDataModule.__init__-25"><span class="linenos">25</span></a><span class="sd">        Args:</span>
+</span><span id="FashionMNISTDataModule.__init__-26"><a href="#FashionMNISTDataModule.__init__-26"><span class="linenos">26</span></a><span class="sd">            data_dir (str): Directory where the data will be downloaded/stored.</span>
+</span><span id="FashionMNISTDataModule.__init__-27"><a href="#FashionMNISTDataModule.__init__-27"><span class="linenos">27</span></a><span class="sd">            batch_size (int): The batch size for the data loaders.</span>
+</span><span id="FashionMNISTDataModule.__init__-28"><a href="#FashionMNISTDataModule.__init__-28"><span class="linenos">28</span></a><span class="sd">            val_split (float): The fraction of the training data to use for validation.</span>
+</span><span id="FashionMNISTDataModule.__init__-29"><a href="#FashionMNISTDataModule.__init__-29"><span class="linenos">29</span></a><span class="sd">            num_workers (int): Number of subprocesses to use for data loading.</span>
+</span><span id="FashionMNISTDataModule.__init__-30"><a href="#FashionMNISTDataModule.__init__-30"><span class="linenos">30</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule.__init__-31"><a href="#FashionMNISTDataModule.__init__-31"><span class="linenos">31</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="FashionMNISTDataModule.__init__-32"><a href="#FashionMNISTDataModule.__init__-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">data_dir</span>
+</span><span id="FashionMNISTDataModule.__init__-33"><a href="#FashionMNISTDataModule.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+</span><span id="FashionMNISTDataModule.__init__-34"><a href="#FashionMNISTDataModule.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span> <span class="c1"># Store num_workers</span>
+</span><span id="FashionMNISTDataModule.__init__-35"><a href="#FashionMNISTDataModule.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_split</span> <span class="o">=</span> <span class="n">val_split</span>
+</span><span id="FashionMNISTDataModule.__init__-36"><a href="#FashionMNISTDataModule.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+</span><span id="FashionMNISTDataModule.__init__-37"><a href="#FashionMNISTDataModule.__init__-37"><span class="linenos">37</span></a>            <span class="p">[</span>
+</span><span id="FashionMNISTDataModule.__init__-38"><a href="#FashionMNISTDataModule.__init__-38"><span class="linenos">38</span></a>                <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+</span><span id="FashionMNISTDataModule.__init__-39"><a href="#FashionMNISTDataModule.__init__-39"><span class="linenos">39</span></a>                <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,)),</span>  <span class="c1"># Normalize to [-1, 1]</span>
+</span><span id="FashionMNISTDataModule.__init__-40"><a href="#FashionMNISTDataModule.__init__-40"><span class="linenos">40</span></a>            <span class="p">]</span>
+</span><span id="FashionMNISTDataModule.__init__-41"><a href="#FashionMNISTDataModule.__init__-41"><span class="linenos">41</span></a>        <span class="p">)</span>
+</span><span id="FashionMNISTDataModule.__init__-42"><a href="#FashionMNISTDataModule.__init__-42"><span class="linenos">42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="FashionMNISTDataModule.__init__-43"><a href="#FashionMNISTDataModule.__init__-43"><span class="linenos">43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="FashionMNISTDataModule.__init__-44"><a href="#FashionMNISTDataModule.__init__-44"><span class="linenos">44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="FashionMNISTDataModule.__init__-45"><a href="#FashionMNISTDataModule.__init__-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># For data exploration tab</span>
 </span></pre></div>
 
 
-    
-
-                            </div>
-                            <div id="FashionMNISTCSVDataset.data_frame" class="classattr">
-                                <div class="attr variable">
-            <span class="name">data_frame</span>
-
-        
-    </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataset.data_frame"></a>
-    
-    
-
-                            </div>
-                            <div id="FashionMNISTCSVDataset.transform" class="classattr">
-                                <div class="attr variable">
-            <span class="name">transform</span>
-
-        
-    </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataset.transform"></a>
-    
-    
-
-                            </div>
-                </section>
-                <section id="FashionMNISTCSVDataModule">
-                            <input id="FashionMNISTCSVDataModule-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr class">
-            
-    <span class="def">class</span>
-    <span class="name">FashionMNISTCSVDataModule</span><wbr>(<span class="base">pytorch_lightning.core.datamodule.LightningDataModule</span>):
-
-                <label class="view-source-button" for="FashionMNISTCSVDataModule-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule-54"><a href="#FashionMNISTCSVDataModule-54"><span class="linenos"> 54</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FashionMNISTCSVDataModule</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-55"><a href="#FashionMNISTCSVDataModule-55"><span class="linenos"> 55</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-56"><a href="#FashionMNISTCSVDataModule-56"><span class="linenos"> 56</span></a><span class="sd">    PyTorch Lightning DataModule for the Fashion-MNIST dataset (CSV format).</span>
-</span><span id="FashionMNISTCSVDataModule-57"><a href="#FashionMNISTCSVDataModule-57"><span class="linenos"> 57</span></a>
-</span><span id="FashionMNISTCSVDataModule-58"><a href="#FashionMNISTCSVDataModule-58"><span class="linenos"> 58</span></a><span class="sd">    This module wraps train, validation, and test datasets</span>
-</span><span id="FashionMNISTCSVDataModule-59"><a href="#FashionMNISTCSVDataModule-59"><span class="linenos"> 59</span></a><span class="sd">    into corresponding DataLoaders for Lightning.</span>
-</span><span id="FashionMNISTCSVDataModule-60"><a href="#FashionMNISTCSVDataModule-60"><span class="linenos"> 60</span></a>
-</span><span id="FashionMNISTCSVDataModule-61"><a href="#FashionMNISTCSVDataModule-61"><span class="linenos"> 61</span></a><span class="sd">    Parameters</span>
-</span><span id="FashionMNISTCSVDataModule-62"><a href="#FashionMNISTCSVDataModule-62"><span class="linenos"> 62</span></a><span class="sd">    ----------</span>
-</span><span id="FashionMNISTCSVDataModule-63"><a href="#FashionMNISTCSVDataModule-63"><span class="linenos"> 63</span></a><span class="sd">    train_csv : str</span>
-</span><span id="FashionMNISTCSVDataModule-64"><a href="#FashionMNISTCSVDataModule-64"><span class="linenos"> 64</span></a><span class="sd">        Path to the training CSV file.</span>
-</span><span id="FashionMNISTCSVDataModule-65"><a href="#FashionMNISTCSVDataModule-65"><span class="linenos"> 65</span></a><span class="sd">    test_csv : str</span>
-</span><span id="FashionMNISTCSVDataModule-66"><a href="#FashionMNISTCSVDataModule-66"><span class="linenos"> 66</span></a><span class="sd">        Path to the test CSV file.</span>
-</span><span id="FashionMNISTCSVDataModule-67"><a href="#FashionMNISTCSVDataModule-67"><span class="linenos"> 67</span></a><span class="sd">    batch_size : int, optional (default=64)</span>
-</span><span id="FashionMNISTCSVDataModule-68"><a href="#FashionMNISTCSVDataModule-68"><span class="linenos"> 68</span></a><span class="sd">        Batch size for training and evaluation.</span>
-</span><span id="FashionMNISTCSVDataModule-69"><a href="#FashionMNISTCSVDataModule-69"><span class="linenos"> 69</span></a><span class="sd">    num_workers : int, optional (default=8)</span>
-</span><span id="FashionMNISTCSVDataModule-70"><a href="#FashionMNISTCSVDataModule-70"><span class="linenos"> 70</span></a><span class="sd">        Number of worker processes for data loading.</span>
-</span><span id="FashionMNISTCSVDataModule-71"><a href="#FashionMNISTCSVDataModule-71"><span class="linenos"> 71</span></a>
-</span><span id="FashionMNISTCSVDataModule-72"><a href="#FashionMNISTCSVDataModule-72"><span class="linenos"> 72</span></a><span class="sd">    Examples</span>
-</span><span id="FashionMNISTCSVDataModule-73"><a href="#FashionMNISTCSVDataModule-73"><span class="linenos"> 73</span></a><span class="sd">    --------</span>
-</span><span id="FashionMNISTCSVDataModule-74"><a href="#FashionMNISTCSVDataModule-74"><span class="linenos"> 74</span></a><span class="sd">    &gt;&gt;&gt; dm = FashionMNISTCSVDataModule(</span>
-</span><span id="FashionMNISTCSVDataModule-75"><a href="#FashionMNISTCSVDataModule-75"><span class="linenos"> 75</span></a><span class="sd">    ...     train_csv=&quot;data/raw/fashion-mnist_train.csv&quot;,</span>
-</span><span id="FashionMNISTCSVDataModule-76"><a href="#FashionMNISTCSVDataModule-76"><span class="linenos"> 76</span></a><span class="sd">    ...     test_csv=&quot;data/raw/fashion-mnist_test.csv&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-77"><a href="#FashionMNISTCSVDataModule-77"><span class="linenos"> 77</span></a><span class="sd">    ... )</span>
-</span><span id="FashionMNISTCSVDataModule-78"><a href="#FashionMNISTCSVDataModule-78"><span class="linenos"> 78</span></a><span class="sd">    &gt;&gt;&gt; dm.setup(&quot;fit&quot;)</span>
-</span><span id="FashionMNISTCSVDataModule-79"><a href="#FashionMNISTCSVDataModule-79"><span class="linenos"> 79</span></a><span class="sd">    &gt;&gt;&gt; len(dm.train_dataloader())</span>
-</span><span id="FashionMNISTCSVDataModule-80"><a href="#FashionMNISTCSVDataModule-80"><span class="linenos"> 80</span></a><span class="sd">    938</span>
-</span><span id="FashionMNISTCSVDataModule-81"><a href="#FashionMNISTCSVDataModule-81"><span class="linenos"> 81</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-82"><a href="#FashionMNISTCSVDataModule-82"><span class="linenos"> 82</span></a>
-</span><span id="FashionMNISTCSVDataModule-83"><a href="#FashionMNISTCSVDataModule-83"><span class="linenos"> 83</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_csv</span><span class="p">,</span> <span class="n">test_csv</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-84"><a href="#FashionMNISTCSVDataModule-84"><span class="linenos"> 84</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="FashionMNISTCSVDataModule-85"><a href="#FashionMNISTCSVDataModule-85"><span class="linenos"> 85</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_csv</span> <span class="o">=</span> <span class="n">train_csv</span>
-</span><span id="FashionMNISTCSVDataModule-86"><a href="#FashionMNISTCSVDataModule-86"><span class="linenos"> 86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span> <span class="o">=</span> <span class="n">test_csv</span>
-</span><span id="FashionMNISTCSVDataModule-87"><a href="#FashionMNISTCSVDataModule-87"><span class="linenos"> 87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-</span><span id="FashionMNISTCSVDataModule-88"><a href="#FashionMNISTCSVDataModule-88"><span class="linenos"> 88</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
-</span><span id="FashionMNISTCSVDataModule-89"><a href="#FashionMNISTCSVDataModule-89"><span class="linenos"> 89</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
-</span><span id="FashionMNISTCSVDataModule-90"><a href="#FashionMNISTCSVDataModule-90"><span class="linenos"> 90</span></a>
-</span><span id="FashionMNISTCSVDataModule-91"><a href="#FashionMNISTCSVDataModule-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-92"><a href="#FashionMNISTCSVDataModule-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-93"><a href="#FashionMNISTCSVDataModule-93"><span class="linenos"> 93</span></a><span class="sd">        Placeholder for dataset preparation.</span>
-</span><span id="FashionMNISTCSVDataModule-94"><a href="#FashionMNISTCSVDataModule-94"><span class="linenos"> 94</span></a>
-</span><span id="FashionMNISTCSVDataModule-95"><a href="#FashionMNISTCSVDataModule-95"><span class="linenos"> 95</span></a><span class="sd">        This method is part of the LightningDataModule interface,</span>
-</span><span id="FashionMNISTCSVDataModule-96"><a href="#FashionMNISTCSVDataModule-96"><span class="linenos"> 96</span></a><span class="sd">        but here it does nothing since data is already available.</span>
-</span><span id="FashionMNISTCSVDataModule-97"><a href="#FashionMNISTCSVDataModule-97"><span class="linenos"> 97</span></a>
-</span><span id="FashionMNISTCSVDataModule-98"><a href="#FashionMNISTCSVDataModule-98"><span class="linenos"> 98</span></a><span class="sd">        Returns</span>
-</span><span id="FashionMNISTCSVDataModule-99"><a href="#FashionMNISTCSVDataModule-99"><span class="linenos"> 99</span></a><span class="sd">        -------</span>
-</span><span id="FashionMNISTCSVDataModule-100"><a href="#FashionMNISTCSVDataModule-100"><span class="linenos">100</span></a><span class="sd">        None</span>
-</span><span id="FashionMNISTCSVDataModule-101"><a href="#FashionMNISTCSVDataModule-101"><span class="linenos">101</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-102"><a href="#FashionMNISTCSVDataModule-102"><span class="linenos">102</span></a>        <span class="k">pass</span>
-</span><span id="FashionMNISTCSVDataModule-103"><a href="#FashionMNISTCSVDataModule-103"><span class="linenos">103</span></a>
-</span><span id="FashionMNISTCSVDataModule-104"><a href="#FashionMNISTCSVDataModule-104"><span class="linenos">104</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-105"><a href="#FashionMNISTCSVDataModule-105"><span class="linenos">105</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-106"><a href="#FashionMNISTCSVDataModule-106"><span class="linenos">106</span></a><span class="sd">        Setup datasets for training, validation, and testing.</span>
-</span><span id="FashionMNISTCSVDataModule-107"><a href="#FashionMNISTCSVDataModule-107"><span class="linenos">107</span></a>
-</span><span id="FashionMNISTCSVDataModule-108"><a href="#FashionMNISTCSVDataModule-108"><span class="linenos">108</span></a><span class="sd">        Parameters</span>
-</span><span id="FashionMNISTCSVDataModule-109"><a href="#FashionMNISTCSVDataModule-109"><span class="linenos">109</span></a><span class="sd">        ----------</span>
-</span><span id="FashionMNISTCSVDataModule-110"><a href="#FashionMNISTCSVDataModule-110"><span class="linenos">110</span></a><span class="sd">        stage : str or None, optional</span>
-</span><span id="FashionMNISTCSVDataModule-111"><a href="#FashionMNISTCSVDataModule-111"><span class="linenos">111</span></a><span class="sd">            Current stage (&quot;fit&quot;, &quot;test&quot;, or None).</span>
-</span><span id="FashionMNISTCSVDataModule-112"><a href="#FashionMNISTCSVDataModule-112"><span class="linenos">112</span></a><span class="sd">            If None, both training/validation and test datasets are initialized.</span>
-</span><span id="FashionMNISTCSVDataModule-113"><a href="#FashionMNISTCSVDataModule-113"><span class="linenos">113</span></a>
-</span><span id="FashionMNISTCSVDataModule-114"><a href="#FashionMNISTCSVDataModule-114"><span class="linenos">114</span></a><span class="sd">        Returns</span>
-</span><span id="FashionMNISTCSVDataModule-115"><a href="#FashionMNISTCSVDataModule-115"><span class="linenos">115</span></a><span class="sd">        -------</span>
-</span><span id="FashionMNISTCSVDataModule-116"><a href="#FashionMNISTCSVDataModule-116"><span class="linenos">116</span></a><span class="sd">        None</span>
-</span><span id="FashionMNISTCSVDataModule-117"><a href="#FashionMNISTCSVDataModule-117"><span class="linenos">117</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule-118"><a href="#FashionMNISTCSVDataModule-118"><span class="linenos">118</span></a>
-</span><span id="FashionMNISTCSVDataModule-119"><a href="#FashionMNISTCSVDataModule-119"><span class="linenos">119</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;fit&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FashionMNISTCSVDataModule-120"><a href="#FashionMNISTCSVDataModule-120"><span class="linenos">120</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule-121"><a href="#FashionMNISTCSVDataModule-121"><span class="linenos">121</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">train_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataModule-122"><a href="#FashionMNISTCSVDataModule-122"><span class="linenos">122</span></a>            <span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule-123"><a href="#FashionMNISTCSVDataModule-123"><span class="linenos">123</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule-124"><a href="#FashionMNISTCSVDataModule-124"><span class="linenos">124</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataModule-125"><a href="#FashionMNISTCSVDataModule-125"><span class="linenos">125</span></a>            <span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule-126"><a href="#FashionMNISTCSVDataModule-126"><span class="linenos">126</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FashionMNISTCSVDataModule-127"><a href="#FashionMNISTCSVDataModule-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule-128"><a href="#FashionMNISTCSVDataModule-128"><span class="linenos">128</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataModule-129"><a href="#FashionMNISTCSVDataModule-129"><span class="linenos">129</span></a>            <span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule-130"><a href="#FashionMNISTCSVDataModule-130"><span class="linenos">130</span></a>
-</span><span id="FashionMNISTCSVDataModule-131"><a href="#FashionMNISTCSVDataModule-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-132"><a href="#FashionMNISTCSVDataModule-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule-133"><a href="#FashionMNISTCSVDataModule-133"><span class="linenos">133</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_ds</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule-134"><a href="#FashionMNISTCSVDataModule-134"><span class="linenos">134</span></a>            <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule-135"><a href="#FashionMNISTCSVDataModule-135"><span class="linenos">135</span></a>            <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule-136"><a href="#FashionMNISTCSVDataModule-136"><span class="linenos">136</span></a>            <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule-137"><a href="#FashionMNISTCSVDataModule-137"><span class="linenos">137</span></a>        <span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule-138"><a href="#FashionMNISTCSVDataModule-138"><span class="linenos">138</span></a>
-</span><span id="FashionMNISTCSVDataModule-139"><a href="#FashionMNISTCSVDataModule-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">val_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-140"><a href="#FashionMNISTCSVDataModule-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule-141"><a href="#FashionMNISTCSVDataModule-141"><span class="linenos">141</span></a>
-</span><span id="FashionMNISTCSVDataModule-142"><a href="#FashionMNISTCSVDataModule-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule-143"><a href="#FashionMNISTCSVDataModule-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>PyTorch Lightning DataModule for the Fashion-MNIST dataset (CSV format).</p>
-
-<p>This module wraps train, validation, and test datasets
-into corresponding DataLoaders for Lightning.</p>
-
-<h2 id="parameters">Parameters</h2>
-
-<p>train_csv : str
-    Path to the training CSV file.
-test_csv : str
-    Path to the test CSV file.
-batch_size : int, optional (default=64)
-    Batch size for training and evaluation.
-num_workers : int, optional (default=8)
-    Number of worker processes for data loading.</p>
-
-<h2 id="examples">Examples</h2>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataModule</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">train_csv</span><span class="o">=</span><span class="s2">&quot;data/raw/fashion-mnist_train.csv&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">test_csv</span><span class="o">=</span><span class="s2">&quot;data/raw/fashion-mnist_test.csv&quot;</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="s2">&quot;fit&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">train_dataloader</span><span class="p">())</span>
-<span class="go">938</span>
-</code></pre>
-</div>
-</div>
-
-
-                            <div id="FashionMNISTCSVDataModule.__init__" class="classattr">
-                                        <input id="FashionMNISTCSVDataModule.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">FashionMNISTCSVDataModule</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">train_csv</span>, </span><span class="param"><span class="n">test_csv</span>, </span><span class="param"><span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span>, </span><span class="param"><span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span></span>)</span>
-
-                <label class="view-source-button" for="FashionMNISTCSVDataModule.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule.__init__-83"><a href="#FashionMNISTCSVDataModule.__init__-83"><span class="linenos">83</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_csv</span><span class="p">,</span> <span class="n">test_csv</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule.__init__-84"><a href="#FashionMNISTCSVDataModule.__init__-84"><span class="linenos">84</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="FashionMNISTCSVDataModule.__init__-85"><a href="#FashionMNISTCSVDataModule.__init__-85"><span class="linenos">85</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">train_csv</span> <span class="o">=</span> <span class="n">train_csv</span>
-</span><span id="FashionMNISTCSVDataModule.__init__-86"><a href="#FashionMNISTCSVDataModule.__init__-86"><span class="linenos">86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span> <span class="o">=</span> <span class="n">test_csv</span>
-</span><span id="FashionMNISTCSVDataModule.__init__-87"><a href="#FashionMNISTCSVDataModule.__init__-87"><span class="linenos">87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-</span><span id="FashionMNISTCSVDataModule.__init__-88"><a href="#FashionMNISTCSVDataModule.__init__-88"><span class="linenos">88</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
-</span><span id="FashionMNISTCSVDataModule.__init__-89"><a href="#FashionMNISTCSVDataModule.__init__-89"><span class="linenos">89</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Attributes:
-    prepare_data_per_node:
-        If True, each LOCAL_RANK=0 will call prepare data.
-        Otherwise only NODE_RANK=0, LOCAL_RANK=0 will prepare data.
-    allow_zero_length_dataloader_with_multiple_devices:
-        If True, dataloader with zero length within local rank is allowed.
-        Default value is False.</p>
+            <div class="docstring"><p>Args:
+    data_dir (str): Directory where the data will be downloaded/stored.
+    batch_size (int): The batch size for the data loaders.
+    val_split (float): The fraction of the training data to use for validation.
+    num_workers (int): Number of subprocesses to use for data loading.</p>
 </div>
 
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.train_csv" class="classattr">
+                            <div id="FashionMNISTDataModule.data_dir" class="classattr">
                                 <div class="attr variable">
-            <span class="name">train_csv</span>
+            <span class="name">data_dir</span>
 
         
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.train_csv"></a>
+    <a class="headerlink" href="#FashionMNISTDataModule.data_dir"></a>
     
     
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.test_csv" class="classattr">
-                                <div class="attr variable">
-            <span class="name">test_csv</span>
-
-        
-    </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.test_csv"></a>
-    
-    
-
-                            </div>
-                            <div id="FashionMNISTCSVDataModule.batch_size" class="classattr">
+                            <div id="FashionMNISTDataModule.batch_size" class="classattr">
                                 <div class="attr variable">
             <span class="name">batch_size</span>
 
         
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.batch_size"></a>
+    <a class="headerlink" href="#FashionMNISTDataModule.batch_size"></a>
     
     
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.num_workers" class="classattr">
+                            <div id="FashionMNISTDataModule.num_workers" class="classattr">
                                 <div class="attr variable">
             <span class="name">num_workers</span>
 
         
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.num_workers"></a>
+    <a class="headerlink" href="#FashionMNISTDataModule.num_workers"></a>
     
     
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.transform" class="classattr">
+                            <div id="FashionMNISTDataModule.val_split" class="classattr">
+                                <div class="attr variable">
+            <span class="name">val_split</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FashionMNISTDataModule.val_split"></a>
+    
+    
+
+                            </div>
+                            <div id="FashionMNISTDataModule.transform" class="classattr">
                                 <div class="attr variable">
             <span class="name">transform</span>
 
         
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.transform"></a>
+    <a class="headerlink" href="#FashionMNISTDataModule.transform"></a>
     
     
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.prepare_data" class="classattr">
-                                        <input id="FashionMNISTCSVDataModule.prepare_data-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FashionMNISTDataModule.train_dataset" class="classattr">
+                                <div class="attr variable">
+            <span class="name">train_dataset</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FashionMNISTDataModule.train_dataset"></a>
+    
+    
+
+                            </div>
+                            <div id="FashionMNISTDataModule.val_dataset" class="classattr">
+                                <div class="attr variable">
+            <span class="name">val_dataset</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FashionMNISTDataModule.val_dataset"></a>
+    
+    
+
+                            </div>
+                            <div id="FashionMNISTDataModule.test_dataset" class="classattr">
+                                <div class="attr variable">
+            <span class="name">test_dataset</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FashionMNISTDataModule.test_dataset"></a>
+    
+    
+
+                            </div>
+                            <div id="FashionMNISTDataModule.train_val_dataset" class="classattr">
+                                <div class="attr variable">
+            <span class="name">train_val_dataset</span>
+
+        
+    </div>
+    <a class="headerlink" href="#FashionMNISTDataModule.train_val_dataset"></a>
+    
+    
+
+                            </div>
+                            <div id="FashionMNISTDataModule.prepare_data" class="classattr">
+                                        <input id="FashionMNISTDataModule.prepare_data-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">prepare_data</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FashionMNISTCSVDataModule.prepare_data-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule.prepare_data-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.prepare_data"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule.prepare_data-91"><a href="#FashionMNISTCSVDataModule.prepare_data-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-92"><a href="#FashionMNISTCSVDataModule.prepare_data-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-93"><a href="#FashionMNISTCSVDataModule.prepare_data-93"><span class="linenos"> 93</span></a><span class="sd">        Placeholder for dataset preparation.</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-94"><a href="#FashionMNISTCSVDataModule.prepare_data-94"><span class="linenos"> 94</span></a>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-95"><a href="#FashionMNISTCSVDataModule.prepare_data-95"><span class="linenos"> 95</span></a><span class="sd">        This method is part of the LightningDataModule interface,</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-96"><a href="#FashionMNISTCSVDataModule.prepare_data-96"><span class="linenos"> 96</span></a><span class="sd">        but here it does nothing since data is already available.</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-97"><a href="#FashionMNISTCSVDataModule.prepare_data-97"><span class="linenos"> 97</span></a>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-98"><a href="#FashionMNISTCSVDataModule.prepare_data-98"><span class="linenos"> 98</span></a><span class="sd">        Returns</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-99"><a href="#FashionMNISTCSVDataModule.prepare_data-99"><span class="linenos"> 99</span></a><span class="sd">        -------</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-100"><a href="#FashionMNISTCSVDataModule.prepare_data-100"><span class="linenos">100</span></a><span class="sd">        None</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-101"><a href="#FashionMNISTCSVDataModule.prepare_data-101"><span class="linenos">101</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule.prepare_data-102"><a href="#FashionMNISTCSVDataModule.prepare_data-102"><span class="linenos">102</span></a>        <span class="k">pass</span>
+    <a class="headerlink" href="#FashionMNISTDataModule.prepare_data"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule.prepare_data-47"><a href="#FashionMNISTDataModule.prepare_data-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule.prepare_data-48"><a href="#FashionMNISTDataModule.prepare_data-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule.prepare_data-49"><a href="#FashionMNISTDataModule.prepare_data-49"><span class="linenos">49</span></a><span class="sd">        Downloads the Fashion-MNIST dataset if it&#39;s not already present.</span>
+</span><span id="FashionMNISTDataModule.prepare_data-50"><a href="#FashionMNISTDataModule.prepare_data-50"><span class="linenos">50</span></a><span class="sd">        This method is called only on a single GPU/process.</span>
+</span><span id="FashionMNISTDataModule.prepare_data-51"><a href="#FashionMNISTDataModule.prepare_data-51"><span class="linenos">51</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule.prepare_data-52"><a href="#FashionMNISTDataModule.prepare_data-52"><span class="linenos">52</span></a>        <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule.prepare_data-53"><a href="#FashionMNISTDataModule.prepare_data-53"><span class="linenos">53</span></a>        <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Placeholder for dataset preparation.</p>
-
-<p>This method is part of the LightningDataModule interface,
-but here it does nothing since data is already available.</p>
-
-<h2 id="returns">Returns</h2>
-
-<p>None</p>
+            <div class="docstring"><p>Downloads the Fashion-MNIST dataset if it's not already present.
+This method is called only on a single GPU/process.</p>
 </div>
 
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.setup" class="classattr">
-                                        <input id="FashionMNISTCSVDataModule.setup-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FashionMNISTDataModule.setup" class="classattr">
+                                        <input id="FashionMNISTDataModule.setup-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">setup</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">stage</span><span class="o">=</span><span class="kc">None</span></span><span class="return-annotation">):</span></span>
+        <span class="name">setup</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">stage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FashionMNISTCSVDataModule.setup-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule.setup-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.setup"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule.setup-104"><a href="#FashionMNISTCSVDataModule.setup-104"><span class="linenos">104</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule.setup-105"><a href="#FashionMNISTCSVDataModule.setup-105"><span class="linenos">105</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule.setup-106"><a href="#FashionMNISTCSVDataModule.setup-106"><span class="linenos">106</span></a><span class="sd">        Setup datasets for training, validation, and testing.</span>
-</span><span id="FashionMNISTCSVDataModule.setup-107"><a href="#FashionMNISTCSVDataModule.setup-107"><span class="linenos">107</span></a>
-</span><span id="FashionMNISTCSVDataModule.setup-108"><a href="#FashionMNISTCSVDataModule.setup-108"><span class="linenos">108</span></a><span class="sd">        Parameters</span>
-</span><span id="FashionMNISTCSVDataModule.setup-109"><a href="#FashionMNISTCSVDataModule.setup-109"><span class="linenos">109</span></a><span class="sd">        ----------</span>
-</span><span id="FashionMNISTCSVDataModule.setup-110"><a href="#FashionMNISTCSVDataModule.setup-110"><span class="linenos">110</span></a><span class="sd">        stage : str or None, optional</span>
-</span><span id="FashionMNISTCSVDataModule.setup-111"><a href="#FashionMNISTCSVDataModule.setup-111"><span class="linenos">111</span></a><span class="sd">            Current stage (&quot;fit&quot;, &quot;test&quot;, or None).</span>
-</span><span id="FashionMNISTCSVDataModule.setup-112"><a href="#FashionMNISTCSVDataModule.setup-112"><span class="linenos">112</span></a><span class="sd">            If None, both training/validation and test datasets are initialized.</span>
-</span><span id="FashionMNISTCSVDataModule.setup-113"><a href="#FashionMNISTCSVDataModule.setup-113"><span class="linenos">113</span></a>
-</span><span id="FashionMNISTCSVDataModule.setup-114"><a href="#FashionMNISTCSVDataModule.setup-114"><span class="linenos">114</span></a><span class="sd">        Returns</span>
-</span><span id="FashionMNISTCSVDataModule.setup-115"><a href="#FashionMNISTCSVDataModule.setup-115"><span class="linenos">115</span></a><span class="sd">        -------</span>
-</span><span id="FashionMNISTCSVDataModule.setup-116"><a href="#FashionMNISTCSVDataModule.setup-116"><span class="linenos">116</span></a><span class="sd">        None</span>
-</span><span id="FashionMNISTCSVDataModule.setup-117"><a href="#FashionMNISTCSVDataModule.setup-117"><span class="linenos">117</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FashionMNISTCSVDataModule.setup-118"><a href="#FashionMNISTCSVDataModule.setup-118"><span class="linenos">118</span></a>
-</span><span id="FashionMNISTCSVDataModule.setup-119"><a href="#FashionMNISTCSVDataModule.setup-119"><span class="linenos">119</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;fit&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FashionMNISTCSVDataModule.setup-120"><a href="#FashionMNISTCSVDataModule.setup-120"><span class="linenos">120</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule.setup-121"><a href="#FashionMNISTCSVDataModule.setup-121"><span class="linenos">121</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">train_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataModule.setup-122"><a href="#FashionMNISTCSVDataModule.setup-122"><span class="linenos">122</span></a>            <span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule.setup-123"><a href="#FashionMNISTCSVDataModule.setup-123"><span class="linenos">123</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule.setup-124"><a href="#FashionMNISTCSVDataModule.setup-124"><span class="linenos">124</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataModule.setup-125"><a href="#FashionMNISTCSVDataModule.setup-125"><span class="linenos">125</span></a>            <span class="p">)</span>
-</span><span id="FashionMNISTCSVDataModule.setup-126"><a href="#FashionMNISTCSVDataModule.setup-126"><span class="linenos">126</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FashionMNISTCSVDataModule.setup-127"><a href="#FashionMNISTCSVDataModule.setup-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span> <span class="o">=</span> <span class="n">FashionMNISTCSVDataset</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule.setup-128"><a href="#FashionMNISTCSVDataModule.setup-128"><span class="linenos">128</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">test_csv</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span>
-</span><span id="FashionMNISTCSVDataModule.setup-129"><a href="#FashionMNISTCSVDataModule.setup-129"><span class="linenos">129</span></a>            <span class="p">)</span>
+    <a class="headerlink" href="#FashionMNISTDataModule.setup"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule.setup-55"><a href="#FashionMNISTDataModule.setup-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule.setup-56"><a href="#FashionMNISTDataModule.setup-56"><span class="linenos">56</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule.setup-57"><a href="#FashionMNISTDataModule.setup-57"><span class="linenos">57</span></a><span class="sd">        Assigns train/val/test datasets for dataloaders.</span>
+</span><span id="FashionMNISTDataModule.setup-58"><a href="#FashionMNISTDataModule.setup-58"><span class="linenos">58</span></a><span class="sd">        This method is called on every GPU.</span>
+</span><span id="FashionMNISTDataModule.setup-59"><a href="#FashionMNISTDataModule.setup-59"><span class="linenos">59</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FashionMNISTDataModule.setup-60"><a href="#FashionMNISTDataModule.setup-60"><span class="linenos">60</span></a>        <span class="c1"># Assign train/val datasets for use in dataloaders</span>
+</span><span id="FashionMNISTDataModule.setup-61"><a href="#FashionMNISTDataModule.setup-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;fit&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FashionMNISTDataModule.setup-62"><a href="#FashionMNISTDataModule.setup-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule.setup-63"><a href="#FashionMNISTDataModule.setup-63"><span class="linenos">63</span></a>            <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule.setup-64"><a href="#FashionMNISTDataModule.setup-64"><span class="linenos">64</span></a>            <span class="n">n_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_split</span> <span class="o">*</span> <span class="n">n_samples</span><span class="p">)</span>
+</span><span id="FashionMNISTDataModule.setup-65"><a href="#FashionMNISTDataModule.setup-65"><span class="linenos">65</span></a>            <span class="n">n_train</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">-</span> <span class="n">n_val</span>
+</span><span id="FashionMNISTDataModule.setup-66"><a href="#FashionMNISTDataModule.setup-66"><span class="linenos">66</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_dataset</span><span class="p">,</span> <span class="p">[</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_val</span><span class="p">])</span>
+</span><span id="FashionMNISTDataModule.setup-67"><a href="#FashionMNISTDataModule.setup-67"><span class="linenos">67</span></a>
+</span><span id="FashionMNISTDataModule.setup-68"><a href="#FashionMNISTDataModule.setup-68"><span class="linenos">68</span></a>        <span class="c1"># Assign test dataset for use in dataloader(s)</span>
+</span><span id="FashionMNISTDataModule.setup-69"><a href="#FashionMNISTDataModule.setup-69"><span class="linenos">69</span></a>        <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span> <span class="ow">or</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FashionMNISTDataModule.setup-70"><a href="#FashionMNISTDataModule.setup-70"><span class="linenos">70</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">FashionMNIST</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Setup datasets for training, validation, and testing.</p>
-
-<h2 id="parameters">Parameters</h2>
-
-<p>stage : str or None, optional
-    Current stage ("fit", "test", or None).
-    If None, both training/validation and test datasets are initialized.</p>
-
-<h2 id="returns">Returns</h2>
-
-<p>None</p>
+            <div class="docstring"><p>Assigns train/val/test datasets for dataloaders.
+This method is called on every GPU.</p>
 </div>
 
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.train_dataloader" class="classattr">
-                                        <input id="FashionMNISTCSVDataModule.train_dataloader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FashionMNISTDataModule.train_dataloader" class="classattr">
+                                        <input id="FashionMNISTDataModule.train_dataloader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">train_dataloader</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FashionMNISTCSVDataModule.train_dataloader-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule.train_dataloader-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.train_dataloader"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule.train_dataloader-131"><a href="#FashionMNISTCSVDataModule.train_dataloader-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule.train_dataloader-132"><a href="#FashionMNISTCSVDataModule.train_dataloader-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span>
-</span><span id="FashionMNISTCSVDataModule.train_dataloader-133"><a href="#FashionMNISTCSVDataModule.train_dataloader-133"><span class="linenos">133</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">train_ds</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule.train_dataloader-134"><a href="#FashionMNISTCSVDataModule.train_dataloader-134"><span class="linenos">134</span></a>            <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule.train_dataloader-135"><a href="#FashionMNISTCSVDataModule.train_dataloader-135"><span class="linenos">135</span></a>            <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule.train_dataloader-136"><a href="#FashionMNISTCSVDataModule.train_dataloader-136"><span class="linenos">136</span></a>            <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="FashionMNISTCSVDataModule.train_dataloader-137"><a href="#FashionMNISTCSVDataModule.train_dataloader-137"><span class="linenos">137</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#FashionMNISTDataModule.train_dataloader"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule.train_dataloader-72"><a href="#FashionMNISTDataModule.train_dataloader-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule.train_dataloader-73"><a href="#FashionMNISTDataModule.train_dataloader-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -738,8 +524,8 @@ a positive integer.</p>
 
 <ul>
 <li><code>~pytorch_lightning.trainer.trainer.Trainer.fit()</code></li>
-<li><code><a href="#FashionMNISTCSVDataModule.prepare_data">prepare_data()</a></code></li>
-<li><code><a href="#FashionMNISTCSVDataModule.setup">setup()</a></code></li>
+<li><code><a href="#FashionMNISTDataModule.prepare_data">prepare_data()</a></code></li>
+<li><code><a href="#FashionMNISTDataModule.setup">setup()</a></code></li>
 </ul>
 
 <p>Note:
@@ -749,19 +535,19 @@ a positive integer.</p>
 
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.val_dataloader" class="classattr">
-                                        <input id="FashionMNISTCSVDataModule.val_dataloader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FashionMNISTDataModule.val_dataloader" class="classattr">
+                                        <input id="FashionMNISTDataModule.val_dataloader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">val_dataloader</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FashionMNISTCSVDataModule.val_dataloader-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule.val_dataloader-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.val_dataloader"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule.val_dataloader-139"><a href="#FashionMNISTCSVDataModule.val_dataloader-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">val_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule.val_dataloader-140"><a href="#FashionMNISTCSVDataModule.val_dataloader-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+    <a class="headerlink" href="#FashionMNISTDataModule.val_dataloader"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule.val_dataloader-75"><a href="#FashionMNISTDataModule.val_dataloader-75"><span class="linenos">75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">val_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule.val_dataloader-76"><a href="#FashionMNISTDataModule.val_dataloader-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -773,13 +559,13 @@ a positive integer.</p>
 :paramref:<code>~pytorch_lightning.trainer.trainer.Trainer.reload_dataloaders_every_n_epochs</code> to
 a positive integer.</p>
 
-<p>It's recommended that all data downloads and preparation happen in <code><a href="#FashionMNISTCSVDataModule.prepare_data">prepare_data()</a></code>.</p>
+<p>It's recommended that all data downloads and preparation happen in <code><a href="#FashionMNISTDataModule.prepare_data">prepare_data()</a></code>.</p>
 
 <ul>
 <li><code>~pytorch_lightning.trainer.trainer.Trainer.fit()</code></li>
 <li><code>~pytorch_lightning.trainer.trainer.Trainer.validate()</code></li>
-<li><code><a href="#FashionMNISTCSVDataModule.prepare_data">prepare_data()</a></code></li>
-<li><code><a href="#FashionMNISTCSVDataModule.setup">setup()</a></code></li>
+<li><code><a href="#FashionMNISTDataModule.prepare_data">prepare_data()</a></code></li>
+<li><code><a href="#FashionMNISTDataModule.setup">setup()</a></code></li>
 </ul>
 
 <p>Note:
@@ -793,19 +579,19 @@ a positive integer.</p>
 
 
                             </div>
-                            <div id="FashionMNISTCSVDataModule.test_dataloader" class="classattr">
-                                        <input id="FashionMNISTCSVDataModule.test_dataloader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FashionMNISTDataModule.test_dataloader" class="classattr">
+                                        <input id="FashionMNISTDataModule.test_dataloader-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">test_dataloader</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FashionMNISTCSVDataModule.test_dataloader-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FashionMNISTDataModule.test_dataloader-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FashionMNISTCSVDataModule.test_dataloader"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTCSVDataModule.test_dataloader-142"><a href="#FashionMNISTCSVDataModule.test_dataloader-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="FashionMNISTCSVDataModule.test_dataloader-143"><a href="#FashionMNISTCSVDataModule.test_dataloader-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
+    <a class="headerlink" href="#FashionMNISTDataModule.test_dataloader"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FashionMNISTDataModule.test_dataloader-78"><a href="#FashionMNISTDataModule.test_dataloader-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FashionMNISTDataModule.test_dataloader-79"><a href="#FashionMNISTDataModule.test_dataloader-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_workers</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -829,8 +615,8 @@ a positive integer.</p>
 
 <ul>
 <li><code>~pytorch_lightning.trainer.trainer.Trainer.test()</code></li>
-<li><code><a href="#FashionMNISTCSVDataModule.prepare_data">prepare_data()</a></code></li>
-<li><code><a href="#FashionMNISTCSVDataModule.setup">setup()</a></code></li>
+<li><code><a href="#FashionMNISTDataModule.prepare_data">prepare_data()</a></code></li>
+<li><code><a href="#FashionMNISTDataModule.setup">setup()</a></code></li>
 </ul>
 
 <p>Note:

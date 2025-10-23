@@ -1,4 +1,3 @@
-# my_project/plot.py
 """
 Utilities to evaluate a trained model and generate performance visualizations.
 - evaluate_and_plot(...) : runs eval on a dataloader and saves:

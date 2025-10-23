@@ -1,3 +1,13 @@
+"""
+Defines the PyTorch Lightning DataModule for the Fashion-MNIST dataset.
+
+This module is responsible for:
+- Downloading the Fashion-MNIST dataset.
+- Applying necessary transformations (e.g., normalization).
+- Splitting the data into training, validation, and test sets.
+- Creating and providing DataLoaders for each set.
+"""
+
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
