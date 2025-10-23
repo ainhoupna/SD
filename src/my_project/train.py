@@ -1,6 +1,7 @@
 from my_project.dataset import FashionMNISTDataModule
 from my_project.model import Net
 from my_project.plots import evaluate_and_plot
+from my_project.config import BATCH_SIZE, NUM_WORKERS, MAX_EPOCHS
 import pytorch_lightning as pl
 
 """
@@ -31,11 +32,6 @@ Run training from the command line:
 
 >>> python -m my_project.train
 """
-
-# Experimental params
-BATCH_SIZE = 128
-NUM_WORKERS = 4
-MAX_EPOCHS = 5
 
 def main():
     """

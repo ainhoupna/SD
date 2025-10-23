@@ -9,12 +9,6 @@ To install dependencies and prepare the environment with uv, run the following c
 2. Initialize the environment: `uv init`
 3. Sync dependencies and environment: `uv sync`
 
-After setting up the environment, install the project in editable mode to make the scripts available in your path:
-
-```bash
-uv pip install -e .
-```
-
 ## Project Structure
 
 ```
@@ -38,16 +32,16 @@ fashion-mnist-classifier/
 
 
 ## Training and Evaluation
-To modify the training and evaluation script, first install the package in editable mode:
+You can run the training and evaluation script using `uvx`, which executes the project's command-line scripts without needing to install the package in editable mode.
 
+To run the training script:
 ```bash
-uv pip install -e .
+uvx fashion-mnist-classifier
 ```
-
-Then, run the following command in the terminal:
+To run the app:
 
 ```bash
-fashion-mnist-classifier
+uvx --from fashion-mnist-classifier fashion-mnist-app
 ```
 
 ## Building and Publishing to PyPI
@@ -109,7 +103,19 @@ Key visualizations include:
 -   **Class similarity dendrograms**: Helps understand relationships between different clothing categories based on their image features.
 -   **Training loss and validation accuracy curves**: Track the model's learning progress over epochs.
 
+## Generating PDF Report with Typst
+
+This project uses [Typst](https://typst.app/) to generate a PDF report from the model's results and visualizations.
+
+### Installation
+
+To compile the report, you first need to install Typst. You can find installation instructions for your operating system on the [official Typst GitHub repository](https://github.com/typst/typst#installation).
+
+### Compiling the Report
+
+Once Typst is installed, navigate to the `reports` directory and compile the `main.typ` file. This will generate a report file in the same directory, containing a summary of the project, including the generated plots and evaluation metrics.
+
 ## Contact
--delrey.132148@e.unavarra.es
--goicoechea.128710@e.unavarra.es
--haddad.179806@e.unavarra.es
+- delrey.132148@e.unavarra.es
+- goicoechea.128710@e.unavarra.es
+- haddad.179806@e.unavarra.es
