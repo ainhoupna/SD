@@ -1,7 +1,12 @@
 ## Fashion-MNIST Classifier
 
+[![PyPI version](https://badge.fury.io/py/fashion-mnist-classifier.svg)](https://pypi.org/project/fashion-mnist-classifier/)
+
+**[View Documentation on GitHub Pages](https://ainhoupna.github.io/SD/my_project.html)**
+
 This project implements an image classification model based on the Fashion MNIST dataset, using PyTorch Lightning to structure the code in a modular and scalable way.
-The dataset is loaded directly from `torchvision.datasets`. The goal is to train a simple convolutional network that classifies images into 10 different clothing categories.
+The dataset is loaded directly from `torchvision.datasets`. The goal is to train a simple convolutional network that classifies images into 10 different clothing categories. 
+
 
 ## Installation
 To install dependencies and prepare the environment with uv, run the following commands in the terminal:
@@ -9,26 +14,6 @@ To install dependencies and prepare the environment with uv, run the following c
 2. Initialize the environment: `uv init`
 3. Sync dependencies and environment: `uv sync`
 
-## Project Structure
-
-```
-fashion-mnist-classifier/
-├── models/               # Directory for saved models and checkpoints
-├── reports/              # Evaluation reports and generated figures
-├── src/
-│   └── my_project/       # Project source code
-│       ├── __init__.py
-│       ├── app.py        # Gradio application
-│       ├── config.py     # Configurations and parameters
-│       ├── dataset.py    # Dataset and DataModule
-│       ├── model.py      # PyTorch Lightning model
-│       ├── plots.py      # Visualization functions
-│       └── train.py      # Main training script
-├── .gitignore
-├── LICENSE               # Project license
-├── pyproject.toml        # Project metadata and dependencies
-└── README.md             # This file
-```
 
 
 ## Training and Evaluation
@@ -114,6 +99,27 @@ To compile the report, you first need to install Typst. You can find installatio
 ### Compiling the Report
 
 Once Typst is installed, navigate to the `reports` directory and compile the `main.typ` file. This will generate a report file in the same directory, containing a summary of the project, including the generated plots and evaluation metrics.
+
+## Project Structure
+
+```
+fashion-mnist-classifier/
+├── models/               # Directory for saved models and checkpoints
+├── reports/              # Evaluation reports and generated figures
+├── src/
+│   └── my_project/       # Project source code
+│       ├── __init__.py
+│       ├── app.py        # Gradio application
+│       ├── config.py     # Configurations and parameters
+│       ├── dataset.py    # Dataset and DataModule
+│       ├── model.py      # PyTorch Lightning model
+│       ├── plots.py      # Visualization functions
+│       └── train.py      # Main training script
+├── .gitignore
+├── LICENSE               # Project license
+├── pyproject.toml        # Project metadata and dependencies
+└── README.md             # This file
+```
 
 ## Contact
 - delrey.132148@e.unavarra.es
